@@ -1,6 +1,32 @@
-import { MOCK_ORDERS, PREVENTIVE_TASKS, MOCK_BUILDINGS } from "./mock-data";
+import { MOCK_ORDERS, PREVENTIVE_TASKS, MOCK_BUILDINGS, MOCK_NOTIFICATIONS } from "./mock-data";
 
 const isClient = typeof window !== "undefined";
+
+// Notifications
+export const getNotifications = (role: string) => {
+  if (!isClient) return [];
+  const saved = localStorage.getItem("shq_notifications");
+  let notifications = saved ? JSON.parse(saved) : MOCK_NOTIFICATIONS;
+
+  if (!saved) {
+    localStorage.setItem("shq_notifications", JSON.stringify(MOCK_NOTIFICATIONS));
+  }
+
+  return notifications.filter((n: any) => n.role === role);
+};
+
+export const markNotificationsAsRead = (role: string) => {
+  if (!isClient) return;
+  const saved = localStorage.getItem("shq_notifications");
+  let notifications = saved ? JSON.parse(saved) : MOCK_NOTIFICATIONS;
+
+  const updated = notifications.map((n: any) =>
+    n.role === role ? { ...n, unread: false } : n
+  );
+
+  localStorage.setItem("shq_notifications", JSON.stringify(updated));
+  return updated;
+};
 
 // Orders
 export const getOrders = () => {

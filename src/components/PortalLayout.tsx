@@ -13,8 +13,18 @@ import {
   BarChart3
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import logo from "@/assets/logo.png";
 import { useAuth } from "@/hooks/use-auth";
+import { getNotifications, markNotificationsAsRead } from "@/lib/data-service";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface SidebarItem {
   title: string;
@@ -30,16 +40,31 @@ interface PortalLayoutProps {
 
 export function PortalLayout({ children, title, items }: PortalLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+  const [notifications, setNotifications] = React.useState<any[]>([]);
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+
+  React.useEffect(() => {
+    if (user?.role) {
+      setNotifications(getNotifications(user.role));
+    }
+  }, [user]);
 
   const handleLogout = () => {
     logout();
     navigate({ to: "/" });
   };
 
+  const handleMarkAllRead = () => {
+    if (user?.role) {
+      markNotificationsAsRead(user.role);
+      setNotifications(getNotifications(user.role));
+    }
+  };
+
   const userName = user?.name || "مستخدم";
   const userRole = user?.role === "employee" ? "موظف" : "مقاول";
+  const unreadCount = notifications.filter(n => n.unread).length;
 
   return (
     <div className="min-h-screen bg-secondary/30 flex flex-col" dir="rtl">
@@ -119,10 +144,42 @@ export function PortalLayout({ children, title, items }: PortalLayoutProps) {
           <header className="hidden lg:flex bg-white border-b border-border h-16 items-center justify-between px-8 sticky top-0 z-20">
             <h1 className="text-lg font-bold text-primary-deep">{title}</h1>
             <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell className="h-5 w-5" />
-                <span className="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full border-2 border-white" />
-              </Button>
+              <DropdownMenu onOpenChange={(open) => open && handleMarkAllRead()}>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="relative">
+                    <Bell className="h-5 w-5" />
+                    {unreadCount > 0 && (
+                      <span className="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full border-2 border-white" />
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-80 p-0 rounded-2xl shadow-elegant" dir="rtl">
+                  <DropdownMenuLabel className="p-4 flex items-center justify-between">
+                    <span className="font-bold text-primary-deep">التنبيهات</span>
+                    {unreadCount > 0 && <Badge className="bg-red-100 text-red-600 border-none">{unreadCount} جديد</Badge>}
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <div className="max-h-[350px] overflow-y-auto">
+                    {notifications.map((n) => (
+                      <DropdownMenuItem key={n.id} className="p-4 flex flex-col items-start gap-1 cursor-default focus:bg-secondary/20">
+                        <div className="flex items-center justify-between w-full">
+                          <span className="font-bold text-sm">{n.title}</span>
+                          <span className="text-[10px] text-muted-foreground">{n.time}</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground text-right">{n.desc}</p>
+                        {n.unread && <div className="h-1.5 w-1.5 rounded-full bg-primary mt-1" />}
+                      </DropdownMenuItem>
+                    ))}
+                    {notifications.length === 0 && (
+                      <div className="p-10 text-center text-muted-foreground text-sm">لا توجد تنبيهات حالياً.</div>
+                    )}
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="p-3 text-center justify-center text-xs font-bold text-primary cursor-pointer hover:bg-primary/5">
+                    عرض كافة التنبيهات
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <div className="h-8 w-px bg-border mx-2" />
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium">{userName}</span>

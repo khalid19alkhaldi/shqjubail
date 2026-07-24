@@ -24,3 +24,14 @@ export const CONTRACTOR_INVOICES = [
   { id: "INV-2026-05", amount: "1,200 ر.س", date: "2026-07-20", status: "قيد المعالجة" },
   { id: "INV-2026-08", amount: "3,800 ر.س", date: "2026-07-22", status: "بانتظار الاعتماد" },
 ];
+
+export const MOCK_NOTIFICATIONS = [
+  // For Employees
+  { id: "N1", role: "employee", title: "عرض مالي جديد", desc: "قدمت مؤسسة الشرق عرضاً للطلب WO-5601", time: "منذ 10 دقائق", unread: true },
+  { id: "N2", role: "employee", title: "تأخر تنفيذ", desc: "الطلب WO-5400 تجاوز الوقت المحدد", time: "منذ ساعتين", unread: true },
+  { id: "N3", role: "employee", title: "بلاغ عاجل", desc: "تسرب مياه في مدرسة الفرقان", time: "أمس", unread: false },
+  // For Contractors
+  { id: "N4", role: "contractor", title: "أمر عمل جديد", desc: "تم إسناد صيانة مكيفات لك", time: "منذ 5 دقائق", unread: true },
+  { id: "N5", role: "contractor", title: "اعتماد مالي", desc: "تم اعتماد عرضك للطلب WO-5519", time: "منذ ساعة", unread: true },
+  { id: "N6", role: "contractor", title: "صرف فاتورة", desc: "تم تحويل مبلغ الفاتورة INV-2026-01", time: "أمس", unread: false },
+];
