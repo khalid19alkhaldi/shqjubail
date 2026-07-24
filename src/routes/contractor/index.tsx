@@ -14,13 +14,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/contractor/")({
-  beforeLoad: ({ context }) => {
-    if (!context.auth.isAuthenticated) {
+  beforeLoad: () => {
+    // Check localStorage directly to avoid sync issues with context
+    const savedUser = localStorage.getItem("shq_user");
+    const user = savedUser ? JSON.parse(savedUser) : null;
+
+    if (!user) {
       throw redirect({
         to: "/contractor/login",
       });
     }
-    if (context.auth.user?.role !== "contractor") {
+
+    if (user.role !== "contractor") {
       throw redirect({
         to: "/",
       });
