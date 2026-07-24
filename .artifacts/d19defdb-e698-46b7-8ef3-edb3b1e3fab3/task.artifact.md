@@ -1,10 +1,5 @@
-- [x] إنشاء ملف البيانات التجريبية `src/lib/mock-data.ts`
-- [x] تطوير صفحة أوامر العمل للموظفين `src/routes/employee/orders.tsx`
-- [x] تطوير صفحة الصيانة الوقائية للموظفين `src/routes/employee/preventive.tsx`
-- [x] تطوير صفحة إدارة المباني للموظفين `src/routes/employee/buildings.tsx`
-- [x] تطوير صفحة التقارير للموظفين `src/routes/employee/reports.tsx`
-- [x] تطوير صفحة الأوامر المسندة للمقاولين `src/routes/contractor/assigned.tsx`
-- [x] تطوير صفحة تاريخ الإنجازات للمقاولين `src/routes/contractor/history.tsx`
-- [x] تطوير صفحة الفواتير للمقاولين `src/routes/contractor/invoices.tsx`
-- [x] التحقق من عمل كافة الصفحات وجمالية التصميم
+- [x] إنشاء مكون `NewWorkOrderModal.tsx` في مجلد `src/components/`
+- [x] ربط زر "أمر عمل جديد" في لوحة تحكم الموظف `src/routes/employee/index.tsx` بالنموذج الجديد
+- [x] ربط زر "أمر عمل جديد" في صفحة أوامر العمل `src/routes/employee/orders.tsx` بالنموذج الجديد
+- [x] التحقق من عمل النموذج وظهور رسائل النجاح والإسناد
 - [ ] رفع التعديلات النهائية إلى GitHub

@@ -17,6 +17,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { MOCK_ORDERS } from "@/lib/mock-data";
+import { NewWorkOrderModal } from "@/components/NewWorkOrderModal";
+import React from "react";
 
 export const Route = createFileRoute("/employee/orders")({
   beforeLoad: () => {
@@ -38,6 +40,8 @@ const sidebarItems = [
 ];
 
 function EmployeeOrders() {
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+
   return (
     <PortalLayout title="إدارة أوامر العمل" items={sidebarItems}>
       <div className="space-y-6">
@@ -51,12 +55,14 @@ function EmployeeOrders() {
               <Filter className="h-4 w-4" />
               تصفية
             </Button>
-            <Button className="gap-2 rounded-xl">
+            <Button className="gap-2 rounded-xl" onClick={() => setIsModalOpen(true)}>
               <Plus className="h-4 w-4" />
               أمر عمل جديد
             </Button>
           </div>
         </div>
+
+        <NewWorkOrderModal isOpen={isModalOpen} onOpenChange={setIsModalOpen} />
 
         <Card className="border-none shadow-card-soft overflow-hidden">
           <CardContent className="p-0">

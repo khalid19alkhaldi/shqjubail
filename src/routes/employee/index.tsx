@@ -57,11 +57,11 @@ const recentOrders = [
 ];
 
 import { toast } from "sonner";
+import { NewWorkOrderModal } from "@/components/NewWorkOrderModal";
+import React from "react";
 
 function EmployeeDashboard() {
-  const handleNewOrder = () => {
-    toast.info("قريباً: سيتم فتح نموذج إنشاء أمر عمل جديد");
-  };
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   return (
     <PortalLayout
@@ -74,11 +74,13 @@ function EmployeeDashboard() {
             <h2 className="text-2xl font-bold text-primary-deep">مرحباً أحمد</h2>
             <p className="text-muted-foreground">إليك نظرة سريعة على حالة الصيانة اليوم.</p>
           </div>
-          <Button className="gap-2" onClick={handleNewOrder}>
+          <Button className="gap-2" onClick={() => setIsModalOpen(true)}>
             <PlusCircle className="h-4 w-4" />
             أمر عمل جديد
           </Button>
         </div>
+
+        <NewWorkOrderModal isOpen={isModalOpen} onOpenChange={setIsModalOpen} />
 
         {/* Stats Grid */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
