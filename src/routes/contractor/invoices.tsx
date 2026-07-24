@@ -18,10 +18,12 @@ import {
 
 export const Route = createFileRoute("/contractor/invoices")({
   beforeLoad: () => {
-    const savedUser = localStorage.getItem("shq_user");
-    const user = savedUser ? JSON.parse(savedUser) : null;
-    if (!user || user.role !== "contractor") {
-      throw redirect({ to: "/contractor/login" });
+    if (typeof window !== "undefined") {
+      const savedUser = localStorage.getItem("shq_user");
+      const user = savedUser ? JSON.parse(savedUser) : null;
+      if (!user || user.role !== "contractor") {
+        throw redirect({ to: "/contractor/login" });
+      }
     }
   },
   component: ContractorInvoices,

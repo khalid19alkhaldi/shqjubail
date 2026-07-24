@@ -27,10 +27,12 @@ import {
 
 export const Route = createFileRoute("/employee/buildings")({
   beforeLoad: () => {
-    const savedUser = localStorage.getItem("shq_user");
-    const user = savedUser ? JSON.parse(savedUser) : null;
-    if (!user || user.role !== "employee") {
-      throw redirect({ to: "/employee/login" });
+    if (typeof window !== "undefined") {
+      const savedUser = localStorage.getItem("shq_user");
+      const user = savedUser ? JSON.parse(savedUser) : null;
+      if (!user || user.role !== "employee") {
+        throw redirect({ to: "/employee/login" });
+      }
     }
   },
   component: EmployeeBuildings,

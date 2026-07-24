@@ -12,23 +12,27 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import React from "react";
+import { getOrders, getDashboardStats } from "@/lib/data-service";
 
 export const Route = createFileRoute("/contractor/")({
   beforeLoad: () => {
-    // Check localStorage directly to avoid sync issues with context
-    const savedUser = localStorage.getItem("shq_user");
-    const user = savedUser ? JSON.parse(savedUser) : null;
+    if (typeof window !== "undefined") {
+      const savedUser = localStorage.getItem("shq_user");
+      const user = savedUser ? JSON.parse(savedUser) : null;
 
-    if (!user) {
-      throw redirect({
-        to: "/contractor/login",
-      });
-    }
+      if (!user) {
+        throw redirect({
+          to: "/contractor/login",
+        });
+      }
 
-    if (user.role !== "contractor") {
-      throw redirect({
-        to: "/",
-      });
+      if (user.role !== "contractor") {
+        throw redirect({
+          to: "/",
+        });
+      }
     }
   },
   component: ContractorDashboard,
@@ -41,24 +45,25 @@ const sidebarItems = [
   { title: "الفواتير", icon: FileText, href: "/contractor/invoices" },
 ];
 
-const stats = [
-  { title: "أوامر بانتظار البدء", value: "5", icon: Clock, color: "text-amber-600", bg: "bg-amber-100" },
-  { title: "قيد التنفيذ", value: "3", icon: HardHat, color: "text-blue-600", bg: "bg-blue-100" },
-  { title: "تم تسليمه اليوم", value: "2", icon: CheckCircle2, color: "text-green-600", bg: "bg-green-100" },
-  { title: "التقييم العام", value: "4.8", icon: CheckCircle2, color: "text-primary", bg: "bg-primary/10" },
-];
-
-const assignedOrders = [
-  { id: "WO-5601", location: "مدرسة خديجة بنت خويلد", task: "صيانة طفايات الحريق", deadline: "اليوم", priority: "عالية" },
-  { id: "WO-5605", location: "مسجد قباء", task: "إصلاح إضاءة الساحة", deadline: "غداً", priority: "متوسطة" },
-];
-
-import { toast } from "sonner";
-
 function ContractorDashboard() {
+  const [orders, setOrders] = React.useState<any[]>([]);
+  const [statsData, setStatsData] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    setOrders(getOrders().filter((o: any) => o.status !== "مكتمل").slice(0, 2));
+    setStatsData(getDashboardStats());
+  }, []);
+
   const handleAction = (action: string) => {
     toast.info(`قريباً: تفعيل خاصية ${action}`);
   };
+
+  const displayStats = statsData ? [
+    { title: "أوامر بانتظار البدء", value: orders.length, icon: Clock, color: "text-amber-600", bg: "bg-amber-100" },
+    { title: "قيد التنفيذ", value: statsData.active - orders.length, icon: HardHat, color: "text-blue-600", bg: "bg-blue-100" },
+    { title: "تم تسليمه اليوم", value: statsData.completed, icon: CheckCircle2, color: "text-green-600", bg: "bg-green-100" },
+    { title: "التقييم العام", value: "4.8", icon: CheckCircle2, color: "text-primary", bg: "bg-primary/10" },
+  ] : [];
 
   return (
     <PortalLayout
@@ -69,13 +74,13 @@ function ContractorDashboard() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-primary-deep">مرحباً مؤسسة صيانة الشرق</h2>
-            <p className="text-muted-foreground">لديك 5 أوامر عمل بانتظار البدء اليوم.</p>
+            <p className="text-muted-foreground">لديك {orders.length} أوامر عمل بانتظار البدء اليوم.</p>
           </div>
         </div>
 
         {/* Stats Grid */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {stats.map((s) => (
+          {displayStats.map((s) => (
             <Card key={s.title} className="border-none shadow-card-soft overflow-hidden">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
@@ -100,14 +105,14 @@ function ContractorDashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {assignedOrders.map((order) => (
+                {orders.map((order) => (
                   <div key={order.id} className="p-5 rounded-2xl border border-border bg-card shadow-sm">
                     <div className="flex justify-between items-start mb-4">
                       <div>
                         <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded-lg mb-2 inline-block">{order.id}</span>
-                        <h3 className="font-bold text-lg">{order.task}</h3>
+                        <h3 className="font-bold text-lg">{order.task || order.title}</h3>
                         <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
-                          <span className="font-medium">{order.location}</span>
+                          <span className="font-medium">{order.location || order.building}</span>
                         </p>
                       </div>
                       <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${
@@ -119,7 +124,7 @@ function ContractorDashboard() {
 
                     <div className="flex flex-wrap gap-4 items-center justify-between pt-4 border-t border-dashed">
                       <div className="text-xs text-muted-foreground">
-                        موعد التسليم: <span className="font-bold text-foreground">{order.deadline}</span>
+                        موعد التسليم: <span className="font-bold text-foreground">{order.deadline || "اليوم"}</span>
                       </div>
                       <div className="flex gap-2">
                         <Button variant="outline" size="sm" className="gap-2" onClick={() => handleAction("رفع الصور")}>
@@ -133,6 +138,9 @@ function ContractorDashboard() {
                     </div>
                   </div>
                 ))}
+                {orders.length === 0 && (
+                  <p className="text-center py-10 text-muted-foreground">لا يوجد أوامر عمل بانتظار البدء.</p>
+                )}
               </div>
             </CardContent>
           </Card>

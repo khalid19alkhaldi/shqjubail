@@ -1,16 +1,24 @@
 import { MOCK_ORDERS, PREVENTIVE_TASKS, MOCK_BUILDINGS } from "./mock-data";
 
+const isClient = typeof window !== "undefined";
+
 // Orders
 export const getOrders = () => {
+  if (!isClient) return MOCK_ORDERS;
   const saved = localStorage.getItem("shq_orders");
   if (!saved) {
     localStorage.setItem("shq_orders", JSON.stringify(MOCK_ORDERS));
     return MOCK_ORDERS;
   }
-  return JSON.parse(saved);
+  try {
+    return JSON.parse(saved);
+  } catch (e) {
+    return MOCK_ORDERS;
+  }
 };
 
 export const saveOrder = (newOrder: any) => {
+  if (!isClient) return [newOrder, ...MOCK_ORDERS];
   const orders = getOrders();
   const updated = [newOrder, ...orders];
   localStorage.setItem("shq_orders", JSON.stringify(updated));
@@ -18,6 +26,7 @@ export const saveOrder = (newOrder: any) => {
 };
 
 export const deleteOrder = (orderId: string) => {
+  if (!isClient) return MOCK_ORDERS;
   const orders = getOrders();
   const updated = orders.filter((o: any) => o.id !== orderId);
   localStorage.setItem("shq_orders", JSON.stringify(updated));
@@ -25,6 +34,7 @@ export const deleteOrder = (orderId: string) => {
 };
 
 export const updateOrderStatus = (orderId: string, status: string, extraData = {}) => {
+  if (!isClient) return MOCK_ORDERS;
   const orders = getOrders();
   const updated = orders.map((o: any) =>
     o.id === orderId ? { ...o, status, ...extraData } : o
@@ -46,15 +56,21 @@ export const getDashboardStats = () => {
 
 // Preventive Tasks
 export const getPreventiveTasks = () => {
+  if (!isClient) return PREVENTIVE_TASKS;
   const saved = localStorage.getItem("shq_preventive");
   if (!saved) {
     localStorage.setItem("shq_preventive", JSON.stringify(PREVENTIVE_TASKS));
     return PREVENTIVE_TASKS;
   }
-  return JSON.parse(saved);
+  try {
+    return JSON.parse(saved);
+  } catch (e) {
+    return PREVENTIVE_TASKS;
+  }
 };
 
 export const savePreventiveTask = (newTask: any) => {
+  if (!isClient) return [newTask, ...PREVENTIVE_TASKS];
   const tasks = getPreventiveTasks();
   const updated = [newTask, ...tasks];
   localStorage.setItem("shq_preventive", JSON.stringify(updated));
@@ -62,6 +78,7 @@ export const savePreventiveTask = (newTask: any) => {
 };
 
 export const approvePreventiveTask = (taskId: string) => {
+  if (!isClient) return PREVENTIVE_TASKS;
   const tasks = getPreventiveTasks();
   const updated = tasks.map((t: any) => {
     if (t.id === taskId) {
@@ -77,15 +94,21 @@ export const approvePreventiveTask = (taskId: string) => {
 
 // Buildings
 export const getBuildings = () => {
+  if (!isClient) return MOCK_BUILDINGS;
   const saved = localStorage.getItem("shq_buildings");
   if (!saved) {
     localStorage.setItem("shq_buildings", JSON.stringify(MOCK_BUILDINGS));
     return MOCK_BUILDINGS;
   }
-  return JSON.parse(saved);
+  try {
+    return JSON.parse(saved);
+  } catch (e) {
+    return MOCK_BUILDINGS;
+  }
 };
 
 export const addBuilding = (newBuilding: any) => {
+  if (!isClient) return [newBuilding, ...MOCK_BUILDINGS];
   const buildings = getBuildings();
   const updated = [newBuilding, ...buildings];
   localStorage.setItem("shq_buildings", JSON.stringify(updated));

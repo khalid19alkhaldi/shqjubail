@@ -7,10 +7,12 @@ import { MOCK_ORDERS } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/contractor/history")({
   beforeLoad: () => {
-    const savedUser = localStorage.getItem("shq_user");
-    const user = savedUser ? JSON.parse(savedUser) : null;
-    if (!user || user.role !== "contractor") {
-      throw redirect({ to: "/contractor/login" });
+    if (typeof window !== "undefined") {
+      const savedUser = localStorage.getItem("shq_user");
+      const user = savedUser ? JSON.parse(savedUser) : null;
+      if (!user || user.role !== "contractor") {
+        throw redirect({ to: "/contractor/login" });
+      }
     }
   },
   component: ContractorHistory,

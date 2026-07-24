@@ -1,4 +1,5 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, Link } from "@tanstack/react-router";
+import React from "react";
 import { PortalLayout } from "@/components/PortalLayout";
 import {
   LayoutDashboard,
@@ -13,23 +14,26 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { getOrders, getDashboardStats } from "@/lib/data-service";
+import { NewWorkOrderModal } from "@/components/NewWorkOrderModal";
 
 export const Route = createFileRoute("/employee/")({
   beforeLoad: () => {
-    // Check localStorage directly to avoid sync issues with context
-    const savedUser = localStorage.getItem("shq_user");
-    const user = savedUser ? JSON.parse(savedUser) : null;
+    if (typeof window !== "undefined") {
+      const savedUser = localStorage.getItem("shq_user");
+      const user = savedUser ? JSON.parse(savedUser) : null;
 
-    if (!user) {
-      throw redirect({
-        to: "/employee/login",
-      });
-    }
+      if (!user) {
+        throw redirect({
+          to: "/employee/login",
+        });
+      }
 
-    if (user.role !== "employee") {
-      throw redirect({
-        to: "/",
-      });
+      if (user.role !== "employee") {
+        throw redirect({
+          to: "/",
+        });
+      }
     }
   },
   component: EmployeeDashboard,
@@ -43,33 +47,17 @@ const sidebarItems = [
   { title: "التقارير", icon: BarChart3, href: "/employee/reports" },
 ];
 
-const stats = [
-  { title: "أوامر نشطة", value: "24", icon: Clock, color: "text-blue-600", bg: "bg-blue-100" },
-  { title: "بانتظار الاعتماد", value: "12", icon: AlertCircle, color: "text-amber-600", bg: "bg-amber-100" },
-  { title: "مكتمل اليوم", value: "8", icon: CheckCircle2, color: "text-green-600", bg: "bg-green-100" },
-  { title: "إجمالي المباني", value: "45", icon: Building2, color: "text-primary", bg: "bg-primary/10" },
-];
-
-const recentOrders = [
-  { id: "WO-5521", title: "صيانة مكيفات — مدرسة الفرقان", date: "منذ ساعتين", status: "نشط", priority: "عالية" },
-  { id: "WO-5519", title: "إصلاح تسرب مياه — مسجد الفاروق", date: "منذ 4 ساعات", status: "قيد التنفيذ", priority: "متوسطة" },
-  { id: "WO-5518", title: "فحص مصعد — مبنى الإدارة", date: "أمس", status: "مكتمل", priority: "عالية" },
-];
-
-import { getOrders, getDashboardStats } from "@/lib/data-service";
-import { Link } from "@tanstack/react-router";
-
 function EmployeeDashboard() {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [orders, setOrders] = React.useState<any[]>([]);
   const [statsData, setStatsData] = React.useState<any>(null);
 
   React.useEffect(() => {
-    setOrders(getOrders().slice(0, 3)); // Only show latest 3
+    setOrders(getOrders().slice(0, 3));
     setStatsData(getDashboardStats());
   }, []);
 
-  const stats = statsData ? [
+  const displayStats = statsData ? [
     { title: "أوامر نشطة", value: statsData.active, icon: Clock, color: "text-blue-600", bg: "bg-blue-100" },
     { title: "بانتظار الاعتماد", value: statsData.pendingApproval, icon: AlertCircle, color: "text-amber-600", bg: "bg-amber-100" },
     { title: "مكتمل اليوم", value: statsData.completed, icon: CheckCircle2, color: "text-green-600", bg: "bg-green-100" },
@@ -97,7 +85,7 @@ function EmployeeDashboard() {
 
         {/* Stats Grid */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {stats.map((s) => (
+          {displayStats.map((s) => (
             <Card key={s.title} className="border-none shadow-card-soft overflow-hidden">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
@@ -144,6 +132,9 @@ function EmployeeDashboard() {
                     </div>
                   </div>
                 ))}
+                {orders.length === 0 && (
+                  <p className="text-center py-4 text-muted-foreground">لا يوجد أوامر عمل حديثة.</p>
+                )}
               </div>
             </CardContent>
           </Card>

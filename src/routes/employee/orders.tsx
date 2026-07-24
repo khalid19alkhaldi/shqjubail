@@ -48,10 +48,12 @@ import { getOrders, updateOrderStatus, deleteOrder } from "@/lib/data-service";
 
 export const Route = createFileRoute("/employee/orders")({
   beforeLoad: () => {
-    const savedUser = localStorage.getItem("shq_user");
-    const user = savedUser ? JSON.parse(savedUser) : null;
-    if (!user || user.role !== "employee") {
-      throw redirect({ to: "/employee/login" });
+    if (typeof window !== "undefined") {
+      const savedUser = localStorage.getItem("shq_user");
+      const user = savedUser ? JSON.parse(savedUser) : null;
+      if (!user || user.role !== "employee") {
+        throw redirect({ to: "/employee/login" });
+      }
     }
   },
   component: EmployeeOrders,
