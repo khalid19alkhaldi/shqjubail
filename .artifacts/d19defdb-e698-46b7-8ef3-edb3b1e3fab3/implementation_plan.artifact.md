@@ -1,50 +1,46 @@
-# تفعيل بوابات الموظفين والمقاولين
+# نظام تسجيل الدخول وإدارة الأدوار (Auth & RBAC)
 
-تفعيل البوابات يتطلب إنشاء مسارات (Routes) جديدة، صفحات تسجيل دخول، ولوحات تحكم (Dashboards) لكل دور. سنقوم بإنشاء هيكل برمجي يدعم هذه الوظائف بشكل تجريبي (Mock) مع إمكانية التوسع مستقبلاً.
-
-## User Review Required
-
-> [!IMPORTANT]
-> سيتم تنفيذ تسجيل الدخول بشكل تجريبي (Client-side only) في هذه المرحلة، حيث لا يوجد قاعدة بيانات فعلية مربوطة حالياً. هل ترغب في استخدام بيانات دخول ثابتة (مثلاً: admin/admin) للتجربة؟
+سنقوم بتحويل نظام الدخول التجريبي الحالي إلى نظام متكامل لإدارة الجلسات والأدوار، مما يضمن أن الموظفين لا يمكنهم الوصول لصفحات المقاولين والعكس، مع توجيه المستخدمين غير المسجلين لصفحات الدخول.
 
 ## Proposed Changes
 
-### [إدارة المسارات (Routing)]
+### [إدارة حالة المستخدم (Authentication Store)]
 
-سنقوم بإضافة مسارات جديدة باستخدام TanStack Router:
+#### [NEW] [use-auth.tsx](file:///C:/Projects/shqjubail-main/src/hooks/use-auth.tsx)
+إنشاء `AuthContext` لإدارة حالة تسجيل الدخول، تخزين بيانات المستخدم، والدور الوظيفي (`employee` أو `contractor`). سيحتوي على دوال:
+- `login(username, password, type)`: للتحقق من البيانات وتخزين الجلسة.
+- `logout()`: لإنهاء الجلسة.
+- `isAuthenticated`: متغير بوليني.
 
-#### [NEW] [employee/login.tsx](file:///C:/Projects/shqjubail-main/src/routes/employee/login.tsx)
-صفحة تسجيل دخول الموظفين بتصميم متوافق مع هوية الجمعية.
+### [حماية المسارات (Route Guarding)]
 
-#### [NEW] [employee/index.tsx](file:///C:/Projects/shqjubail-main/src/routes/employee/index.tsx)
-لوحة تحكم الموظف: عرض أوامر العمل، حالة المباني، وإحصائيات سريعة.
+#### [MODIFY] [router.tsx](file:///C:/Projects/shqjubail-main/src/router.tsx)
+تحديث سياق الرواتر (Router Context) ليشمل بيانات المصادقة، مما يسمح لنا باستخدامها في حماية المسارات.
 
-#### [NEW] [contractor/login.tsx](file:///C:/Projects/shqjubail-main/src/routes/contractor/login.tsx)
-صفحة تسجيل دخول المقاولين.
+#### [MODIFY] [src/routes/employee/index.tsx](file:///C:/Projects/shqjubail-main/src/routes/employee/index.tsx) و [src/routes/contractor/index.tsx](file:///C:/Projects/shqjubail-main/src/routes/contractor/index.tsx)
+إضافة خاصية `beforeLoad` للمسارات المحمية. ستقوم هذه الخاصية بالتأكد من:
+1. أن المستخدم مسجل الدخول.
+2. أن دور المستخدم يطابق المسار المطلوب (مثلاً: الموظف لا يدخل لوحة المقاول).
+3. التوجيه لصفحة تسجيل الدخول إذا لم تتحقق الشروط.
 
-#### [NEW] [contractor/index.tsx](file:///C:/Projects/shqjubail-main/src/routes/contractor/index.tsx)
-لوحة تحكم المقاول: عرض الأوامر المسندة، تحديث الحالة، ورفع صور الإنجاز.
+### [تحديث واجهات تسجيل الدخول]
 
----
+#### [MODIFY] [login.tsx](file:///C:/Projects/shqjubail-main/src/routes/employee/login.tsx) و [login.tsx](file:///C:/Projects/shqjubail-main/src/routes/contractor/login.tsx)
+ربط النماذج بدالة `login` من الـ `AuthContext` بدلاً من التوجيه المباشر.
 
-### [تعديل الصفحة الرئيسية]
+## بيانات الدخول للتجربة (Mock Users)
 
-#### [MODIFY] [index.tsx](file:///C:/Projects/shqjubail-main/src/routes/index.tsx)
-تحديث الروابط في القائمة العلوية (Navbar) وقسم البوابات (Portals Section) لتوجه المستخدم إلى صفحات تسجيل الدخول الجديدة.
-
----
-
-### [المكونات المشتركة]
-
-#### [NEW] `src/components/PortalLayout.tsx`
-قالب مشترك للوحات التحكم يحتوي على القائمة الجانبية (Sidebar) وهيدر المستخدم.
+> [!NOTE]
+> سيتم استخدام البيانات التالية للتجربة في هذه المرحلة:
+> - **الموظفين:** اسم المستخدم `admin` وكلمة المرور `admin`.
+> - **المقاولين:** رمز المقاول `vendor` وكلمة المرور `vendor`.
 
 ## Verification Plan
 
 ### Automated Tests
-- التأكد من أن المسارات الجديدة تعمل ولا تسبب أخطاء في الـ Router.
+- فحص منطق الـ `beforeLoad` للتأكد من منع الوصول غير المصرح به.
 
 ### Manual Verification
-1. الضغط على زر "دخول الموظفين" من الصفحة الرئيسية والتأكد من الانتقال لصفحة تسجيل الدخول.
-2. تجربة "تسجيل الدخول" (Mock) والانتقال للوحة التحكم.
-3. التأكد من ظهور أوامر العمل التجريبية في لوحة تحكم الموظف والمقاول.
+1. محاولة الدخول المباشر إلى `/employee` بدون تسجيل الدخول -> يجب التوجيه لـ `/employee/login`.
+2. تسجيل الدخول كمقاول ثم محاولة الدخول لـ `/employee` -> يجب المنع أو التوجيه لصفحة المقاول.
+3. التأكد من ظهور اسم المستخدم الصحيح في لوحة التحكم بعد الدخول.

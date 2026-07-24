@@ -11,6 +11,10 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { AuthProvider, useAuth } from "@/hooks/use-auth";
+
+function NotFoundComponent() {
+// ... (rest of the component)
 
 function NotFoundComponent() {
   return (
@@ -72,7 +76,10 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
-export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+export const Route = createRootRouteWithContext<{
+  queryClient: QueryClient;
+  auth: { user: any | null; isAuthenticated: boolean };
+}>()({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -137,8 +144,24 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <AuthProvider>
+        <AuthWrapper />
+      </AuthProvider>
     </QueryClientProvider>
+  );
+}
+
+function AuthWrapper() {
+  const auth = useAuth();
+
+  return (
+    <Outlet
+      context={{
+        auth: {
+          user: auth.user,
+          isAuthenticated: auth.isAuthenticated
+        }
+      }}
+    />
   );
 }

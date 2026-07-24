@@ -1,8 +1,8 @@
-- [x] إنشاء هيكل المجلدات للمسارات الجديدة `src/routes/employee` و `src/routes/contractor`
-- [x] إنشاء مكون `PortalLayout` المشترك للوحات التحكم
-- [x] تنفيذ صفحة تسجيل دخول الموظفين `src/routes/employee/login.tsx`
-- [x] تنفيذ لوحة تحكم الموظفين `src/routes/employee/index.tsx`
-- [x] تنفيذ صفحة تسجيل دخول المقاولين `src/routes/contractor/login.tsx`
-- [x] تنفيذ لوحة تحكم المقاولين `src/routes/contractor/index.tsx`
-- [x] تحديث الصفحة الرئيسية `src/routes/index.tsx` لربط الأزرار بالمسارات الجديدة
-- [/] التحقق من عمل الروابط والتنقل بين الصفحات
+- [x] إنشاء هوك `useAuth` لإدارة حالة المستخدم والأدوار في `src/hooks/use-auth.tsx`
+- [x] تحديث `src/router.tsx` ليشمل سياق المصادقة (Auth Context)
+- [x] تحديث `src/routes/__root.tsx` لتوفير سياق المصادقة للتطبيق
+- [x] إضافة حماية المسارات (Route Guards) لمسارات الموظفين `src/routes/employee/index.tsx`
+- [x] إضافة حماية المسارات (Route Guards) لمسارات المقاولين `src/routes/contractor/index.tsx`
+- [x] تحديث صفحة دخول الموظفين `src/routes/employee/login.tsx` لاستخدام النظام الجديد
+- [x] تحديث صفحة دخول المقاولين `src/routes/contractor/login.tsx` لاستخدام النظام الجديد
+- [x] التحقق من عمل نظام الحماية ومنع الوصول غير المصرح به

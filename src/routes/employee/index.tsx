@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { PortalLayout } from "@/components/PortalLayout";
 import {
   LayoutDashboard,
@@ -15,6 +15,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/employee/")({
+  beforeLoad: ({ context }) => {
+    if (!context.auth.isAuthenticated) {
+      throw redirect({
+        to: "/employee/login",
+      });
+    }
+    if (context.auth.user?.role !== "employee") {
+      throw redirect({
+        to: "/",
+      });
+    }
+  },
   component: EmployeeDashboard,
 });
 
@@ -43,8 +55,6 @@ function EmployeeDashboard() {
   return (
     <PortalLayout
       title="لوحة تحكم الموظفين"
-      userName="أحمد المحمد"
-      userRole="مشرف صيانة"
       items={sidebarItems}
     >
       <div className="space-y-6">

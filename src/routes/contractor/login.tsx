@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import logo from "@/assets/logo.png";
+import { useAuth } from "@/hooks/use-auth";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/contractor/login")({
   component: ContractorLogin,
@@ -15,11 +17,17 @@ function ContractorLogin() {
   const [vendorCode, setVendorCode] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (vendorCode && password) {
+    // Mock login logic: vendor/vendor
+    if (vendorCode === "vendor" && password === "vendor") {
+      login(vendorCode, "contractor", "مؤسسة صيانة الشرق");
+      toast.success("تم تسجيل الدخول بنجاح");
       navigate({ to: "/contractor" });
+    } else {
+      toast.error("رمز المقاول أو كلمة المرور غير صحيحة");
     }
   };
 

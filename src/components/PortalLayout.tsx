@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
+import { useAuth } from "@/hooks/use-auth";
 
 interface SidebarItem {
   title: string;
@@ -24,19 +25,21 @@ interface SidebarItem {
 interface PortalLayoutProps {
   children: React.ReactNode;
   title: string;
-  userName: string;
-  userRole: string;
   items: SidebarItem[];
 }
 
-export function PortalLayout({ children, title, userName, userRole, items }: PortalLayoutProps) {
+export function PortalLayout({ children, title, items }: PortalLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const handleLogout = () => {
-    // In a real app, clear tokens here
+    logout();
     navigate({ to: "/" });
   };
+
+  const userName = user?.name || "مستخدم";
+  const userRole = user?.role === "employee" ? "موظف" : "مقاول";
 
   return (
     <div className="min-h-screen bg-secondary/30 flex flex-col" dir="rtl">

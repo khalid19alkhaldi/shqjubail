@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { PortalLayout } from "@/components/PortalLayout";
 import {
   LayoutDashboard,
@@ -14,6 +14,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/contractor/")({
+  beforeLoad: ({ context }) => {
+    if (!context.auth.isAuthenticated) {
+      throw redirect({
+        to: "/contractor/login",
+      });
+    }
+    if (context.auth.user?.role !== "contractor") {
+      throw redirect({
+        to: "/",
+      });
+    }
+  },
   component: ContractorDashboard,
 });
 
@@ -40,8 +52,6 @@ function ContractorDashboard() {
   return (
     <PortalLayout
       title="لوحة تحكم المقاول"
-      userName="مؤسسة صيانة الشرق"
-      userRole="مقاول تكييف وكهرباء"
       items={sidebarItems}
     >
       <div className="space-y-6">

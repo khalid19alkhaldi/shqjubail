@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import logo from "@/assets/logo.png";
+import { useAuth } from "@/hooks/use-auth";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/employee/login")({
   component: EmployeeLogin,
@@ -15,12 +17,17 @@ function EmployeeLogin() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock login logic
-    if (username && password) {
+    // Mock login logic: admin/admin
+    if (username === "admin" && password === "admin") {
+      login(username, "employee", "أحمد المحمد");
+      toast.success("تم تسجيل الدخول بنجاح");
       navigate({ to: "/employee" });
+    } else {
+      toast.error("اسم المستخدم أو كلمة المرور غير صحيحة");
     }
   };
 
