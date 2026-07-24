@@ -56,12 +56,15 @@ const recentOrders = [
   { id: "WO-5518", title: "فحص مصعد — مبنى الإدارة", date: "أمس", status: "مكتمل", priority: "عالية" },
 ];
 
-import { toast } from "sonner";
-import { NewWorkOrderModal } from "@/components/NewWorkOrderModal";
-import React from "react";
+import { getOrders } from "@/lib/data-service";
 
 function EmployeeDashboard() {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [orders, setOrders] = React.useState<any[]>([]);
+
+  React.useEffect(() => {
+    setOrders(getOrders().slice(0, 3)); // Only show latest 3
+  }, []);
 
   return (
     <PortalLayout
@@ -110,7 +113,7 @@ function EmployeeDashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {recentOrders.map((order) => (
+                {orders.map((order) => (
                   <div key={order.id} className="flex items-center justify-between p-4 rounded-xl border border-border hover:bg-secondary/20 transition">
                     <div className="flex items-center gap-4">
                       <div className={`h-10 w-10 rounded-lg bg-secondary flex items-center justify-center`}>

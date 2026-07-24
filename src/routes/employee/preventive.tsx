@@ -3,7 +3,9 @@ import { PortalLayout } from "@/components/PortalLayout";
 import { LayoutDashboard, ClipboardList, Wrench, Building2, BarChart3, Calendar, Clock, CheckCircle2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PREVENTIVE_TASKS } from "@/lib/mock-data";
+import { getPreventiveTasks, approvePreventiveTask } from "@/lib/data-service";
+import React from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/employee/preventive")({
   beforeLoad: () => {
@@ -25,19 +27,35 @@ const sidebarItems = [
 ];
 
 function EmployeePreventive() {
+  const [tasks, setTasks] = React.useState<any[]>([]);
+
+  const refreshTasks = () => {
+    setTasks(getPreventiveTasks());
+  };
+
+  React.useEffect(() => {
+    refreshTasks();
+  }, []);
+
+  const handleApprove = (taskId: string) => {
+    approvePreventiveTask(taskId);
+    toast.success("تم تعميد المهمة وتحديث التاريخ القادم بنجاح");
+    refreshTasks();
+  };
+
   return (
     <PortalLayout title="الصيانة الوقائية" items={sidebarItems}>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold text-primary-deep">جدول الصيانة الدورية</h2>
-          <Button className="rounded-xl gap-2">
+          <Button className="rounded-xl gap-2" onClick={() => toast.info("قريباً: فتح نموذج جدولة مهمة جديدة")}>
             <Calendar className="h-4 w-4" />
             جدولة مهمة جديدة
           </Button>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {PREVENTIVE_TASKS.map((task) => (
+          {tasks.map((task) => (
             <Card key={task.id} className="border-none shadow-card-soft hover:shadow-elegant transition-shadow">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-lg font-bold">{task.title}</CardTitle>
@@ -59,11 +77,17 @@ function EmployeePreventive() {
                   </div>
                   <div className="pt-4 flex items-center justify-between border-t border-dashed">
                     <span className={`px-2 py-1 rounded-lg text-xs font-bold ${
-                      task.status === "عاجل" ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
+                      task.status === "عاجل" ? "bg-red-100 text-red-700" :
+                      task.status === "تم التعميد" ? "bg-blue-100 text-blue-700" : "bg-green-100 text-green-700"
                     }`}>
                       {task.status}
                     </span>
-                    <Button variant="ghost" size="sm" className="text-primary gap-1 font-bold">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-primary gap-1 font-bold"
+                      onClick={() => handleApprove(task.id)}
+                    >
                       <CheckCircle2 className="h-4 w-4" />
                       تعميد الآن
                     </Button>

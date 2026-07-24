@@ -1,11 +1,20 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { PortalLayout } from "@/components/PortalLayout";
-import { LayoutDashboard, ClipboardList, CheckSquare, FileText, Download, Wallet, CreditCard, Clock } from "lucide-react";
+import { LayoutDashboard, ClipboardList, CheckSquare, FileText, Download, Wallet, CreditCard, Clock, Eye } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { CONTRACTOR_INVOICES } from "@/lib/mock-data";
+import React from "react";
+import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription
+} from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/contractor/invoices")({
   beforeLoad: () => {
@@ -26,6 +35,8 @@ const sidebarItems = [
 ];
 
 function ContractorInvoices() {
+  const [selectedInvoice, setSelectedInvoice] = React.useState<any>(null);
+
   return (
     <PortalLayout title="الفواتير والمدفوعات" items={sidebarItems}>
       <div className="space-y-6">
@@ -73,7 +84,7 @@ function ContractorInvoices() {
 
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold text-primary-deep">كشف الفواتير</h2>
-          <Button variant="outline" className="rounded-xl gap-2">
+          <Button variant="outline" className="rounded-xl gap-2" onClick={() => toast.info("جاري تجهيز ملف PDF للتحميل...")}>
             <Download className="h-4 w-4" />
             تحميل الكشف
           </Button>
@@ -107,7 +118,15 @@ function ContractorInvoices() {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <Button variant="ghost" size="sm" className="text-primary font-bold">عرض التفاصيل</Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-primary font-bold gap-1"
+                        onClick={() => setSelectedInvoice(inv)}
+                      >
+                        <Eye className="h-4 w-4" />
+                        عرض التفاصيل
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -116,6 +135,35 @@ function ContractorInvoices() {
           </CardContent>
         </Card>
       </div>
+
+      <Dialog open={!!selectedInvoice} onOpenChange={(open) => !open && setSelectedInvoice(null)}>
+        <DialogContent className="sm:max-w-[400px]" dir="rtl">
+          <DialogHeader>
+            <DialogTitle className="text-right font-bold text-primary-deep">فاتورة {selectedInvoice?.id}</DialogTitle>
+            <DialogDescription className="text-right">تفاصيل بنود الفاتورة والمستحقات.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="p-4 rounded-xl bg-secondary/30 space-y-3">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">أجور اليد العاملة:</span>
+                <span className="font-bold">2,400 ر.س</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">قطع غيار:</span>
+                <span className="font-bold">1,100 ر.س</span>
+              </div>
+              <div className="flex justify-between text-sm border-t border-white/50 pt-2">
+                <span className="text-primary-deep font-bold">الإجمالي:</span>
+                <span className="text-primary-deep font-black">{selectedInvoice?.amount}</span>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button className="flex-1 rounded-xl font-bold" onClick={() => toast.info("تحميل الفاتورة PDF")}>تحميل</Button>
+              <Button variant="outline" className="flex-1 rounded-xl" onClick={() => setSelectedInvoice(null)}>إغلاق</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </PortalLayout>
   );
 }

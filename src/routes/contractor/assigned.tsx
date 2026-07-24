@@ -1,15 +1,13 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { PortalLayout } from "@/components/PortalLayout";
-import { LayoutDashboard, ClipboardList, CheckSquare, FileText, MapPin, Calendar, Clock, Camera, CheckCircle2, XCircle, Calculator } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { LayoutDashboard, ClipboardList, CheckSquare, FileText, MapPin, Calendar, Clock, Camera, CheckCircle2, XCircle } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MOCK_ORDERS } from "@/lib/mock-data";
 import { toast } from "sonner";
 import React from "react";
 import { ContractorQuoteModal } from "@/components/ContractorQuoteModal";
-
-import { getOrders } from "@/lib/data-service";
+import { getOrders, updateOrderStatus } from "@/lib/data-service";
 
 export const Route = createFileRoute("/contractor/assigned")({
   beforeLoad: () => {
@@ -34,12 +32,30 @@ function ContractorAssigned() {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [orders, setOrders] = React.useState<any[]>([]);
 
-  React.useEffect(() => {
+  const refreshOrders = () => {
     setOrders(getOrders());
+  };
+
+  React.useEffect(() => {
+    refreshOrders();
   }, []);
 
   const handleAction = (action: string) => {
     toast.info(`قريباً: تفعيل خاصية ${action}`);
+  };
+
+  const handleConfirmCompletion = (orderId: string) => {
+    updateOrderStatus(orderId, "مكتمل");
+    toast.success("تم تأكيد الإنجاز بنجاح، سيظهر في الأرشيف الآن");
+    refreshOrders();
+  };
+
+  const handleReject = (orderId: string) => {
+    if (confirm("هل أنت متأكد من رفض هذا العمل؟")) {
+      updateOrderStatus(orderId, "مرفوض من المقاول");
+      toast.error("تم رفض العمل وإبلاغ الجمعية");
+      refreshOrders();
+    }
   };
 
   const handleQuoteClick = (id: string, title: string) => {
@@ -53,7 +69,7 @@ function ContractorAssigned() {
         <h2 className="text-xl font-bold text-primary-deep">أوامر العمل النشطة</h2>
 
         <div className="space-y-4">
-          {orders.filter((o: any) => o.status !== "مكتمل").map((order: any) => (
+          {orders.filter((o: any) => o.status !== "مكتمل" && o.status !== "مرفوض من المقاول").map((order: any) => (
             <Card key={order.id} className="border-none shadow-card-soft hover:border-gold/30 border transition-all">
               <CardContent className="p-6">
                 <div className="flex flex-col lg:flex-row justify-between gap-6">
@@ -84,7 +100,7 @@ function ContractorAssigned() {
                           <CheckCircle2 className="h-4 w-4" />
                           قبول وتقديم عرض مالي
                         </Button>
-                        <Button variant="outline" className="gap-2 rounded-xl flex-1 text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200" onClick={() => handleAction("رفض العمل")}>
+                        <Button variant="outline" className="gap-2 rounded-xl flex-1 text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200" onClick={() => handleReject(order.id)}>
                           <XCircle className="h-4 w-4" />
                           رفض العمل
                         </Button>
@@ -100,7 +116,7 @@ function ContractorAssigned() {
                           <Camera className="h-4 w-4" />
                           رفع صور الإنجاز
                         </Button>
-                        <Button className="gap-2 rounded-xl flex-1 bg-primary hover:bg-primary-deep" onClick={() => handleAction("إنهاء التذكرة")}>
+                        <Button className="gap-2 rounded-xl flex-1 bg-primary hover:bg-primary-deep" onClick={() => handleConfirmCompletion(order.id)}>
                           <CheckCircle2 className="h-4 w-4" />
                           تأكيد الإنجاز
                         </Button>

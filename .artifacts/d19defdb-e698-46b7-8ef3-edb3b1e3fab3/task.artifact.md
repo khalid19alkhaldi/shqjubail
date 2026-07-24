@@ -1,5 +1,8 @@
-- [x] إنشاء مكون `NewWorkOrderModal.tsx` في مجلد `src/components/`
-- [x] ربط زر "أمر عمل جديد" في لوحة تحكم الموظف `src/routes/employee/index.tsx` بالنموذج الجديد
-- [x] ربط زر "أمر عمل جديد" في صفحة أوامر العمل `src/routes/employee/orders.tsx` بالنموذج الجديد
-- [x] التحقق من عمل النموذج وظهور رسائل النجاح والإسناد
-- [ ] رفع التعديلات النهائية إلى GitHub
+- [ ] تحديث `src/lib/data-service.ts` لدعم الحذف وتحديث مهام الصيانة
+- [ ] تفعيل البحث والفلترة والحذف في صفحة أوامر العمل للموظفين `src/routes/employee/orders.tsx`
+- [ ] تفعيل زر "تعميد الآن" و "جدولة مهمة" في صفحة الصيانة الوقائية `src/routes/employee/preventive.tsx`
+- [ ] تفعيل إضافة مبنى وعرض الأصول في صفحة إدارة المباني `src/routes/employee/buildings.tsx`
+- [ ] تفعيل زر "تأكيد الإنجاز" و "رفض العمل" في صفحة المقاول `src/routes/contractor/assigned.tsx`
+- [ ] تفعيل عرض تفاصيل الفواتير وتحميل الكشوفات `src/routes/contractor/invoices.tsx`
+- [ ] التحقق من عمل كافة العمليات ومزامنتها بين الحسابين
+- [ ] رفع التحديثات الشاملة إلى GitHub

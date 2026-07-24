@@ -37,7 +37,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { getOrders, updateOrderStatus } from "@/lib/data-service";
+import { getOrders, updateOrderStatus, deleteOrder } from "@/lib/data-service";
 
 export const Route = createFileRoute("/employee/orders")({
   beforeLoad: () => {
@@ -61,14 +61,22 @@ const sidebarItems = [
 function EmployeeOrders() {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [orders, setOrders] = React.useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = React.useState("");
 
   const refreshOrders = () => {
-    setOrders(getOrders());
+    const allOrders = getOrders();
+    if (searchQuery) {
+      setOrders(allOrders.filter((o: any) =>
+        o.title.includes(searchQuery) || o.id.includes(searchQuery) || o.building.includes(searchQuery)
+      ));
+    } else {
+      setOrders(allOrders);
+    }
   };
 
   React.useEffect(() => {
     refreshOrders();
-  }, []);
+  }, [searchQuery]);
 
   const handleQuoteAction = (action: string, orderId: string) => {
     const newStatus = action === "اعتماد" ? "قيد التنفيذ" : "مرفوض";
@@ -77,13 +85,26 @@ function EmployeeOrders() {
     refreshOrders();
   };
 
+  const handleDelete = (orderId: string) => {
+    if (confirm("هل أنت متأكد من حذف هذا الطلب؟")) {
+      deleteOrder(orderId);
+      toast.success("تم حذف الطلب بنجاح");
+      refreshOrders();
+    }
+  };
+
   return (
     <PortalLayout title="إدارة أوامر العمل" items={sidebarItems}>
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="relative flex-1 max-w-md">
             <Search className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="بحث برقم الأمر أو العنوان..." className="pr-10 rounded-xl" />
+            <Input
+              placeholder="بحث برقم الأمر أو العنوان..."
+              className="pr-10 rounded-xl"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
           <div className="flex items-center gap-2">
             <Button variant="outline" className="gap-2 rounded-xl">
@@ -192,7 +213,10 @@ function EmployeeOrders() {
                                 <FileText className="h-4 w-4" /> طباعة أمر العمل
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
-                              <DropdownMenuItem className="text-right gap-2 cursor-pointer text-red-600 focus:text-red-600">
+                              <DropdownMenuItem
+                                className="text-right gap-2 cursor-pointer text-red-600 focus:text-red-600"
+                                onClick={() => handleDelete(order.id)}
+                              >
                                 <Trash2 className="h-4 w-4" /> حذف الطلب
                               </DropdownMenuItem>
                             </DropdownMenuContent>
