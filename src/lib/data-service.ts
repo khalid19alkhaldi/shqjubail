@@ -1,5 +1,6 @@
 import { MOCK_ORDERS, PREVENTIVE_TASKS, MOCK_BUILDINGS } from "./mock-data";
 
+// Orders
 export const getOrders = () => {
   const saved = localStorage.getItem("shq_orders");
   if (!saved) {
@@ -32,6 +33,17 @@ export const updateOrderStatus = (orderId: string, status: string, extraData = {
   return updated;
 };
 
+// Statistics
+export const getDashboardStats = () => {
+  const orders = getOrders();
+  const active = orders.filter((o: any) => o.status !== "مكتمل" && o.status !== "مرفوض من المقاول").length;
+  const completed = orders.filter((o: any) => o.status === "مكتمل").length;
+  const pendingApproval = orders.filter((o: any) => o.status === "تم تقديم عرض مالي").length;
+  const buildings = getBuildings().length;
+
+  return { active, completed, pendingApproval, buildings };
+};
+
 // Preventive Tasks
 export const getPreventiveTasks = () => {
   const saved = localStorage.getItem("shq_preventive");
@@ -42,12 +54,19 @@ export const getPreventiveTasks = () => {
   return JSON.parse(saved);
 };
 
+export const savePreventiveTask = (newTask: any) => {
+  const tasks = getPreventiveTasks();
+  const updated = [newTask, ...tasks];
+  localStorage.setItem("shq_preventive", JSON.stringify(updated));
+  return updated;
+};
+
 export const approvePreventiveTask = (taskId: string) => {
   const tasks = getPreventiveTasks();
   const updated = tasks.map((t: any) => {
     if (t.id === taskId) {
       const nextDate = new Date();
-      nextDate.setMonth(nextDate.getMonth() + 3); // Mock logic
+      nextDate.setMonth(nextDate.getMonth() + 3);
       return { ...t, status: "تم التعميد", nextDate: nextDate.toISOString().split('T')[0] };
     }
     return t;

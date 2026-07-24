@@ -1,10 +1,12 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { PortalLayout } from "@/components/PortalLayout";
-import { LayoutDashboard, ClipboardList, Wrench, Building2, BarChart3, MapPin, Package, AlertCircle } from "lucide-react";
+import { LayoutDashboard, ClipboardList, Wrench, Building2, BarChart3, MapPin, Package, AlertCircle, Plus, Camera } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { getBuildings } from "@/lib/data-service";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { getBuildings, addBuilding } from "@/lib/data-service";
 import React from "react";
 import { toast } from "sonner";
 import {
@@ -12,8 +14,16 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription
+  DialogDescription,
+  DialogFooter
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const Route = createFileRoute("/employee/buildings")({
   beforeLoad: () => {
@@ -37,18 +47,46 @@ const sidebarItems = [
 function EmployeeBuildings() {
   const [buildings, setBuildings] = React.useState<any[]>([]);
   const [selectedBuilding, setSelectedBuilding] = React.useState<any>(null);
+  const [isAddModalOpen, setIsAddModalOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+
+  const refreshBuildings = () => {
+    setBuildings(getBuildings());
+  };
 
   React.useEffect(() => {
-    setBuildings(getBuildings());
+    refreshBuildings();
   }, []);
+
+  const handleAddBuilding = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const newBuilding = {
+      id: `B${Math.floor(Math.random() * 1000)}`,
+      name: "مبنى جديد للجمعية",
+      type: "تعليمي",
+      assets: 0,
+      activeOrders: 0,
+      image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&auto=format&fit=crop"
+    };
+
+    setTimeout(() => {
+      addBuilding(newBuilding);
+      setLoading(false);
+      setIsAddModalOpen(false);
+      toast.success("تمت إضافة المرفق الجديد بنجاح");
+      refreshBuildings();
+    }, 1200);
+  };
 
   return (
     <PortalLayout title="إدارة المباني والأصول" items={sidebarItems}>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold text-primary-deep">سجل المرافق</h2>
-          <Button className="rounded-xl gap-2" onClick={() => toast.info("قريباً: إضافة مرفق جديد")}>
-            <Building2 className="h-4 w-4" />
+          <Button className="rounded-xl gap-2" onClick={() => setIsAddModalOpen(true)}>
+            <Plus className="h-4 w-4" />
             إضافة مرفق جديد
           </Button>
         </div>
@@ -84,7 +122,7 @@ function EmployeeBuildings() {
                   className="w-full mt-5 rounded-xl font-bold"
                   onClick={() => setSelectedBuilding(building)}
                 >
-                  عرض التفاصيل
+                  عرض التفاصيل والأصول
                 </Button>
               </CardContent>
             </Card>
@@ -92,6 +130,7 @@ function EmployeeBuildings() {
         </div>
       </div>
 
+      {/* Details Modal */}
       <Dialog open={!!selectedBuilding} onOpenChange={(open) => !open && setSelectedBuilding(null)}>
         <DialogContent className="sm:max-w-[450px]" dir="rtl">
           <DialogHeader>
@@ -126,6 +165,44 @@ function EmployeeBuildings() {
               تحميل سجل الأصول
             </Button>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Building Modal */}
+      <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+        <DialogContent className="sm:max-w-[450px]" dir="rtl">
+          <DialogHeader>
+            <DialogTitle className="text-right font-bold text-primary-deep">إضافة مرفق جديد</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleAddBuilding} className="space-y-5 py-4 text-right">
+            <div className="space-y-2">
+              <Label className="font-bold">اسم المرفق</Label>
+              <Input placeholder="مثلاً: مدرسة تحفيظ جديدة" required className="rounded-xl" />
+            </div>
+            <div className="space-y-2">
+              <Label className="font-bold">نوع المرفق</Label>
+              <Select defaultValue="edu">
+                <SelectTrigger className="rounded-xl text-right">
+                  <SelectValue placeholder="اختر النوع" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="edu">تعليمي</SelectItem>
+                  <SelectItem value="rel">ديني (مسجد)</SelectItem>
+                  <SelectItem value="adm">إداري</SelectItem>
+                  <SelectItem value="inv">استثماري (أوقاف)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="p-10 border-2 border-dashed border-border rounded-2xl text-center bg-secondary/10 cursor-pointer hover:bg-secondary/20 transition-colors">
+              <Camera className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
+              <div className="text-xs text-muted-foreground">رفع صورة المرفق</div>
+            </div>
+            <DialogFooter>
+              <Button type="submit" className="w-full rounded-xl font-bold" disabled={loading}>
+                {loading ? "جاري الحفظ..." : "حفظ المرفق"}
+              </Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
     </PortalLayout>

@@ -84,7 +84,7 @@ function Nav() {
           <a href="#workflow" className="hover:text-primary">آلية العمل</a>
           <a href="#portals" className="hover:text-primary">البوابات</a>
           <a href="#contractors" className="hover:text-primary">المقاولون</a>
-          <a href="#contact" className="hover:text-primary">تواصل معنا</a>
+          <a href="#cta" className="hover:text-primary">تواصل معنا</a>
         </nav>
         <div className="flex items-center gap-3">
           <Link to="/employee/login" className="hidden rounded-full border border-primary/30 px-5 py-2 text-sm font-semibold text-primary transition hover:bg-primary/5 sm:inline-flex">
@@ -417,7 +417,7 @@ function CTA() {
             <h2 className="text-3xl font-black sm:text-4xl">جاهزون لرفع كفاءة صيانة مرافقكم؟</h2>
             <p className="mt-4 max-w-lg text-primary-foreground/85">احجز جولة تعريفية مع فريقنا لعرض المنصة على بيانات فعلية من مبانيكم، وابدأ التشغيل خلال أيام.</p>
           </div>
-          <form id="contact" className="space-y-3 rounded-2xl bg-primary-foreground/10 p-6 backdrop-blur" onSubmit={(e) => e.preventDefault()}>
+          <form id="cta-form" className="space-y-3 rounded-2xl bg-primary-foreground/10 p-6 backdrop-blur" onSubmit={(e) => e.preventDefault()}>
             <div className="grid gap-3 sm:grid-cols-2">
               <input type="text" placeholder="الاسم الكامل" className="w-full rounded-xl border border-primary-foreground/20 bg-primary-foreground/10 px-4 py-3 text-sm text-primary-foreground placeholder:text-primary-foreground/60 focus:border-gold focus:outline-none" />
               <input type="text" placeholder="الجهة / القسم" className="w-full rounded-xl border border-primary-foreground/20 bg-primary-foreground/10 px-4 py-3 text-sm text-primary-foreground placeholder:text-primary-foreground/60 focus:border-gold focus:outline-none" />

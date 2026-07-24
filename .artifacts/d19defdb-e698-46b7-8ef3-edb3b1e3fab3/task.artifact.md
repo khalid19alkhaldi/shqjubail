@@ -1,8 +1,8 @@
-- [ ] تحديث `src/lib/data-service.ts` لدعم الحذف وتحديث مهام الصيانة
-- [ ] تفعيل البحث والفلترة والحذف في صفحة أوامر العمل للموظفين `src/routes/employee/orders.tsx`
-- [ ] تفعيل زر "تعميد الآن" و "جدولة مهمة" في صفحة الصيانة الوقائية `src/routes/employee/preventive.tsx`
-- [ ] تفعيل إضافة مبنى وعرض الأصول في صفحة إدارة المباني `src/routes/employee/buildings.tsx`
-- [ ] تفعيل زر "تأكيد الإنجاز" و "رفض العمل" في صفحة المقاول `src/routes/contractor/assigned.tsx`
-- [ ] تفعيل عرض تفاصيل الفواتير وتحميل الكشوفات `src/routes/contractor/invoices.tsx`
-- [ ] التحقق من عمل كافة العمليات ومزامنتها بين الحسابين
-- [ ] رفع التحديثات الشاملة إلى GitHub
+- [ ] تحديث `src/lib/data-service.ts` لدعم الإحصائيات الديناميكية وإدارة المباني والمهام
+- [ ] تفعيل الإحصائيات الحقيقية في لوحة تحكم الموظف `src/routes/employee/index.tsx`
+- [ ] تطوير نظام التصفية (Filter) وعرض التفاصيل في صفحة أوامر العمل `src/routes/employee/orders.tsx`
+- [ ] إنشاء نموذج "جدولة مهمة صيانة" في صفحة الصيانة الوقائية `src/routes/employee/preventive.tsx`
+- [ ] إنشاء نموذج "إضافة مرفق جديد" في صفحة المباني `src/routes/employee/buildings.tsx`
+- [ ] تفعيل "رفع الصور" و "نموذج الرفض" في صفحة المقاول `src/routes/contractor/assigned.tsx`
+- [ ] محاكاة تحميل ملفات PDF في صفحة الفواتير والتقارير
+- [ ] التحقق من تكامل كافة الوظائف ورفعها إلى GitHub

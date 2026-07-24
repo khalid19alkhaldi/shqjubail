@@ -1,12 +1,22 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { PortalLayout } from "@/components/PortalLayout";
-import { LayoutDashboard, ClipboardList, CheckSquare, FileText, MapPin, Calendar, Clock, Camera, CheckCircle2, XCircle } from "lucide-react";
+import { LayoutDashboard, ClipboardList, CheckSquare, FileText, MapPin, Calendar, Clock, Camera, CheckCircle2, XCircle, Calculator } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import React from "react";
 import { ContractorQuoteModal } from "@/components/ContractorQuoteModal";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { getOrders, updateOrderStatus } from "@/lib/data-service";
 
 export const Route = createFileRoute("/contractor/assigned")({
@@ -29,7 +39,9 @@ const sidebarItems = [
 
 function ContractorAssigned() {
   const [selectedOrder, setSelectedOrder] = React.useState<{id: string, title: string} | null>(null);
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [isQuoteModalOpen, setIsQuoteModalOpen] = React.useState(false);
+  const [isRejectModalOpen, setIsRejectModalOpen] = React.useState(false);
+  const [isUploadModalOpen, setIsAddModalOpen] = React.useState(false);
   const [orders, setOrders] = React.useState<any[]>([]);
 
   const refreshOrders = () => {
@@ -40,19 +52,17 @@ function ContractorAssigned() {
     refreshOrders();
   }, []);
 
-  const handleAction = (action: string) => {
-    toast.info(`قريباً: تفعيل خاصية ${action}`);
-  };
-
   const handleConfirmCompletion = (orderId: string) => {
     updateOrderStatus(orderId, "مكتمل");
     toast.success("تم تأكيد الإنجاز بنجاح، سيظهر في الأرشيف الآن");
     refreshOrders();
   };
 
-  const handleReject = (orderId: string) => {
-    if (confirm("هل أنت متأكد من رفض هذا العمل؟")) {
-      updateOrderStatus(orderId, "مرفوض من المقاول");
+  const handleRejectSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedOrder) {
+      updateOrderStatus(selectedOrder.id, "مرفوض من المقاول");
+      setIsRejectModalOpen(false);
       toast.error("تم رفض العمل وإبلاغ الجمعية");
       refreshOrders();
     }
@@ -60,7 +70,12 @@ function ContractorAssigned() {
 
   const handleQuoteClick = (id: string, title: string) => {
     setSelectedOrder({ id, title });
-    setIsModalOpen(true);
+    setIsQuoteModalOpen(true);
+  };
+
+  const handleRejectClick = (id: string, title: string) => {
+    setSelectedOrder({ id, title });
+    setIsRejectModalOpen(true);
   };
 
   return (
@@ -100,7 +115,7 @@ function ContractorAssigned() {
                           <CheckCircle2 className="h-4 w-4" />
                           قبول وتقديم عرض مالي
                         </Button>
-                        <Button variant="outline" className="gap-2 rounded-xl flex-1 text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200" onClick={() => handleReject(order.id)}>
+                        <Button variant="outline" className="gap-2 rounded-xl flex-1 text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200" onClick={() => handleRejectClick(order.id, order.title)}>
                           <XCircle className="h-4 w-4" />
                           رفض العمل
                         </Button>
@@ -112,7 +127,7 @@ function ContractorAssigned() {
                       </div>
                     ) : (
                       <>
-                        <Button variant="outline" className="gap-2 rounded-xl flex-1" onClick={() => handleAction("رفع الصور")}>
+                        <Button variant="outline" className="gap-2 rounded-xl flex-1" onClick={() => setIsAddModalOpen(true)}>
                           <Camera className="h-4 w-4" />
                           رفع صور الإنجاز
                         </Button>
@@ -138,17 +153,67 @@ function ContractorAssigned() {
               </CardContent>
             </Card>
           ))}
+          {orders.filter((o: any) => o.status !== "مكتمل" && o.status !== "مرفوض من المقاول").length === 0 && (
+            <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-border">
+              <p className="text-muted-foreground">لا يوجد أوامر مسندة حالياً.</p>
+            </div>
+          )}
         </div>
       </div>
 
+      {/* Quote Modal */}
       {selectedOrder && (
         <ContractorQuoteModal
-          isOpen={isModalOpen}
-          onOpenChange={setIsModalOpen}
+          isOpen={isQuoteModalOpen}
+          onOpenChange={setIsQuoteModalOpen}
           orderId={selectedOrder.id}
           orderTitle={selectedOrder.title}
         />
       )}
+
+      {/* Reject Modal */}
+      <Dialog open={isRejectModalOpen} onOpenChange={setIsRejectModalOpen}>
+        <DialogContent className="sm:max-w-[400px]" dir="rtl">
+          <DialogHeader>
+            <DialogTitle className="text-right text-red-600 font-bold">رفض أمر العمل</DialogTitle>
+            <DialogDescription className="text-right">يرجى ذكر سبب الرفض لإبلاغ إدارة الجمعية.</DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleRejectSubmit} className="space-y-4 py-2 text-right">
+            <div className="space-y-2">
+              <Label className="font-bold">سبب الرفض</Label>
+              <Textarea placeholder="مثلاً: انشغال الطاقم الفني حالياً..." required className="rounded-xl" />
+            </div>
+            <DialogFooter>
+              <Button type="submit" variant="destructive" className="w-full rounded-xl font-bold">تأكيد الرفض</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Upload Modal Simulation */}
+      <Dialog open={isUploadModalOpen} onOpenChange={setIsAddModalOpen}>
+        <DialogContent className="sm:max-w-[400px]" dir="rtl">
+          <DialogHeader>
+            <DialogTitle className="text-right font-bold">رفع صور الإنجاز</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4 text-right">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="aspect-square rounded-xl border-2 border-dashed border-border bg-secondary/10 flex flex-col items-center justify-center cursor-pointer">
+                <Camera className="h-6 w-6 text-muted-foreground mb-1" />
+                <span className="text-[10px]">صورة قبل</span>
+              </div>
+              <div className="aspect-square rounded-xl border-2 border-dashed border-border bg-secondary/10 flex flex-col items-center justify-center cursor-pointer">
+                <Camera className="h-6 w-6 text-muted-foreground mb-1" />
+                <span className="text-[10px]">صورة بعد</span>
+              </div>
+            </div>
+            <Button className="w-full rounded-xl font-bold" onClick={() => {
+              setIsAddModalOpen(false);
+              toast.success("تم رفع الصور بنجاح");
+            }}>حفظ وإرسال</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </PortalLayout>
   );
 }

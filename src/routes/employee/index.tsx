@@ -56,15 +56,25 @@ const recentOrders = [
   { id: "WO-5518", title: "فحص مصعد — مبنى الإدارة", date: "أمس", status: "مكتمل", priority: "عالية" },
 ];
 
-import { getOrders } from "@/lib/data-service";
+import { getOrders, getDashboardStats } from "@/lib/data-service";
+import { Link } from "@tanstack/react-router";
 
 function EmployeeDashboard() {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [orders, setOrders] = React.useState<any[]>([]);
+  const [statsData, setStatsData] = React.useState<any>(null);
 
   React.useEffect(() => {
     setOrders(getOrders().slice(0, 3)); // Only show latest 3
+    setStatsData(getDashboardStats());
   }, []);
+
+  const stats = statsData ? [
+    { title: "أوامر نشطة", value: statsData.active, icon: Clock, color: "text-blue-600", bg: "bg-blue-100" },
+    { title: "بانتظار الاعتماد", value: statsData.pendingApproval, icon: AlertCircle, color: "text-amber-600", bg: "bg-amber-100" },
+    { title: "مكتمل اليوم", value: statsData.completed, icon: CheckCircle2, color: "text-green-600", bg: "bg-green-100" },
+    { title: "إجمالي المباني", value: statsData.buildings, icon: Building2, color: "text-primary", bg: "bg-primary/10" },
+  ] : [];
 
   return (
     <PortalLayout
@@ -109,7 +119,7 @@ function EmployeeDashboard() {
           <Card className="lg:col-span-2 border-none shadow-card-soft">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-lg">أحدث أوامر العمل</CardTitle>
-              <Button variant="ghost" size="sm" className="text-primary font-bold">عرض الكل</Button>
+              <Link to="/employee/orders" className="text-sm font-bold text-primary hover:underline">عرض الكل</Link>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">

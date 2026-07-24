@@ -9,25 +9,25 @@ import {
   Search,
   Filter,
   MoreVertical,
-  Plus
+  Plus,
+  CheckCircle2,
+  XCircle,
+  Edit,
+  Trash2,
+  Eye,
+  FileText,
+  MapPin,
+  Calendar,
+  AlertCircle
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { MOCK_ORDERS } from "@/lib/mock-data";
 import { NewWorkOrderModal } from "@/components/NewWorkOrderModal";
 import React from "react";
 import { toast } from "sonner";
-import {
-  CheckCircle2,
-  XCircle,
-  Edit,
-  Trash2,
-  Eye,
-  FileText
-} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,7 +36,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter
+} from "@/components/ui/dialog";
 import { getOrders, updateOrderStatus, deleteOrder } from "@/lib/data-service";
 
 export const Route = createFileRoute("/employee/orders")({
@@ -60,23 +67,32 @@ const sidebarItems = [
 
 function EmployeeOrders() {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [selectedOrder, setSelectedOrder] = React.useState<any>(null);
   const [orders, setOrders] = React.useState<any[]>([]);
   const [searchQuery, setSearchQuery] = React.useState("");
+  const [filterPriority, setFilterPriority] = React.useState<string>("all");
 
   const refreshOrders = () => {
-    const allOrders = getOrders();
+    let allOrders = getOrders();
+
     if (searchQuery) {
-      setOrders(allOrders.filter((o: any) =>
-        o.title.includes(searchQuery) || o.id.includes(searchQuery) || o.building.includes(searchQuery)
-      ));
-    } else {
-      setOrders(allOrders);
+      allOrders = allOrders.filter((o: any) =>
+        o.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        o.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        o.building.toLowerCase().includes(searchQuery.toLowerCase())
+      );
     }
+
+    if (filterPriority !== "all") {
+      allOrders = allOrders.filter((o: any) => o.priority === filterPriority);
+    }
+
+    setOrders(allOrders);
   };
 
   React.useEffect(() => {
     refreshOrders();
-  }, [searchQuery]);
+  }, [searchQuery, filterPriority]);
 
   const handleQuoteAction = (action: string, orderId: string) => {
     const newStatus = action === "اعتماد" ? "قيد التنفيذ" : "مرفوض";
@@ -100,17 +116,27 @@ function EmployeeOrders() {
           <div className="relative flex-1 max-w-md">
             <Search className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="بحث برقم الأمر أو العنوان..."
+              placeholder="بحث برقم الأمر، العنوان، أو المبنى..."
               className="pr-10 rounded-xl"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" className="gap-2 rounded-xl">
-              <Filter className="h-4 w-4" />
-              تصفية
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="gap-2 rounded-xl">
+                  <Filter className="h-4 w-4" />
+                  الأولوية: {filterPriority === "all" ? "الكل" : filterPriority}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" dir="rtl">
+                <DropdownMenuItem onClick={() => setFilterPriority("all")}>الكل</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setFilterPriority("عالية")}>عالية</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setFilterPriority("متوسطة")}>متوسطة</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setFilterPriority("منخفضة")}>منخفضة</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button className="gap-2 rounded-xl" onClick={() => setIsModalOpen(true)}>
               <Plus className="h-4 w-4" />
               أمر عمل جديد
@@ -162,9 +188,9 @@ function EmployeeOrders() {
                           }`} />
                           <span className="text-sm font-medium">{order.status}</span>
                         </div>
-                        {(order as any).quote && (
+                        {order.quote && (
                           <div className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md inline-block">
-                            العرض: {(order as any).quote}
+                            العرض: {order.quote}
                           </div>
                         )}
                       </div>
@@ -203,13 +229,13 @@ function EmployeeOrders() {
                             <DropdownMenuContent align="end" dir="rtl">
                               <DropdownMenuLabel className="text-right">الإجراءات</DropdownMenuLabel>
                               <DropdownMenuSeparator />
-                              <DropdownMenuItem className="text-right gap-2 cursor-pointer">
+                              <DropdownMenuItem className="text-right gap-2 cursor-pointer" onClick={() => setSelectedOrder(order)}>
                                 <Eye className="h-4 w-4" /> عرض التفاصيل
                               </DropdownMenuItem>
-                              <DropdownMenuItem className="text-right gap-2 cursor-pointer">
+                              <DropdownMenuItem className="text-right gap-2 cursor-pointer" onClick={() => toast.info("قريباً: تعديل بيانات الطلب")}>
                                 <Edit className="h-4 w-4" /> تعديل الطلب
                               </DropdownMenuItem>
-                              <DropdownMenuItem className="text-right gap-2 cursor-pointer">
+                              <DropdownMenuItem className="text-right gap-2 cursor-pointer" onClick={() => toast.info("جاري تجهيز نسخة للطباعة...")}>
                                 <FileText className="h-4 w-4" /> طباعة أمر العمل
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
@@ -226,11 +252,74 @@ function EmployeeOrders() {
                     </TableCell>
                   </TableRow>
                 ))}
+                {orders.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-center py-10 text-muted-foreground">
+                      لا توجد أوامر عمل تطابق بحثك.
+                    </TableCell>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </CardContent>
         </Card>
       </div>
+
+      {/* Details Modal */}
+      <Dialog open={!!selectedOrder} onOpenChange={(open) => !open && setSelectedOrder(null)}>
+        <DialogContent className="sm:max-w-[500px]" dir="rtl">
+          <DialogHeader>
+            <DialogTitle className="text-right font-bold text-primary-deep flex items-center gap-2">
+              <ClipboardList className="h-5 w-5 text-primary" />
+              تفاصيل أمر العمل {selectedOrder?.id}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6 py-4 text-right">
+            <div className="space-y-1">
+              <h4 className="font-bold text-lg">{selectedOrder?.title}</h4>
+              <p className="text-sm text-muted-foreground">{selectedOrder?.category}</p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-3 rounded-xl bg-secondary/30 space-y-1">
+                <div className="text-[10px] text-muted-foreground flex items-center gap-1">
+                  <MapPin className="h-3 w-3" /> الموقع
+                </div>
+                <div className="text-sm font-bold">{selectedOrder?.building}</div>
+              </div>
+              <div className="p-3 rounded-xl bg-secondary/30 space-y-1">
+                <div className="text-[10px] text-muted-foreground flex items-center gap-1">
+                  <Calendar className="h-3 w-3" /> التاريخ
+                </div>
+                <div className="text-sm font-bold">{selectedOrder?.date}</div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="font-bold">وصف البلاغ</Label>
+              <div className="p-4 rounded-xl border border-border text-sm leading-relaxed bg-white">
+                {selectedOrder?.desc || "يوجد تسرب مياه في المنطقة المذكورة يتطلب فحصاً فورياً."}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between p-4 rounded-xl bg-primary-deep text-white">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-white/10 flex items-center justify-center text-gold">
+                  <Building2 className="h-5 w-5" />
+                </div>
+                <div>
+                  <div className="text-[10px] opacity-70">المقاول المسند</div>
+                  <div className="text-sm font-bold">{selectedOrder?.contractor || "غير مسند حالياً"}</div>
+                </div>
+              </div>
+              <Badge className="bg-gold text-gold-foreground font-bold">{selectedOrder?.status}</Badge>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" className="w-full rounded-xl" onClick={() => setSelectedOrder(null)}>إغلاق</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </PortalLayout>
   );
 }
