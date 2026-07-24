@@ -53,7 +53,13 @@ const assignedOrders = [
   { id: "WO-5605", location: "مسجد قباء", task: "إصلاح إضاءة الساحة", deadline: "غداً", priority: "متوسطة" },
 ];
 
+import { toast } from "sonner";
+
 function ContractorDashboard() {
+  const handleAction = (action: string) => {
+    toast.info(`قريباً: تفعيل خاصية ${action}`);
+  };
+
   return (
     <PortalLayout
       title="لوحة تحكم المقاول"
@@ -116,11 +122,11 @@ function ContractorDashboard() {
                         موعد التسليم: <span className="font-bold text-foreground">{order.deadline}</span>
                       </div>
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm" className="gap-2">
+                        <Button variant="outline" size="sm" className="gap-2" onClick={() => handleAction("رفع الصور")}>
                           <Camera className="h-4 w-4" />
                           رفع صورة
                         </Button>
-                        <Button size="sm" className="bg-primary hover:bg-primary-deep">
+                        <Button size="sm" className="bg-primary hover:bg-primary-deep" onClick={() => handleAction("بدء العمل")}>
                           بدء العمل
                         </Button>
                       </div>

@@ -1,8 +1,5 @@
-- [x] إنشاء هوك `useAuth` لإدارة حالة المستخدم والأدوار في `src/hooks/use-auth.tsx`
-- [x] تحديث `src/router.tsx` ليشمل سياق المصادقة (Auth Context)
-- [x] تحديث `src/routes/__root.tsx` لتوفير سياق المصادقة للتطبيق
-- [x] إضافة حماية المسارات (Route Guards) لمسارات الموظفين `src/routes/employee/index.tsx`
-- [x] إضافة حماية المسارات (Route Guards) لمسارات المقاولين `src/routes/contractor/index.tsx`
-- [x] تحديث صفحة دخول الموظفين `src/routes/employee/login.tsx` لاستخدام النظام الجديد
-- [x] تحديث صفحة دخول المقاولين `src/routes/contractor/login.tsx` لاستخدام النظام الجديد
-- [x] التحقق من عمل نظام الحماية ومنع الوصول غير المصرح به
+- [x] إنشاء صفحات الموظفين الناقصة (`orders`, `preventive`, `buildings`, `reports`)
+- [x] إنشاء صفحات المقاولين الناقصة (`assigned`, `history`, `invoices`)
+- [x] تفعيل زر "أمر عمل جديد" في لوحة تحكم الموظف
+- [x] التحقق من عمل جميع الروابط في القائمة الجانبية
+- [ ] رفع التعديلات إلى GitHub

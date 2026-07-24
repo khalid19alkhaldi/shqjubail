@@ -56,7 +56,13 @@ const recentOrders = [
   { id: "WO-5518", title: "فحص مصعد — مبنى الإدارة", date: "أمس", status: "مكتمل", priority: "عالية" },
 ];
 
+import { toast } from "sonner";
+
 function EmployeeDashboard() {
+  const handleNewOrder = () => {
+    toast.info("قريباً: سيتم فتح نموذج إنشاء أمر عمل جديد");
+  };
+
   return (
     <PortalLayout
       title="لوحة تحكم الموظفين"
@@ -68,7 +74,7 @@ function EmployeeDashboard() {
             <h2 className="text-2xl font-bold text-primary-deep">مرحباً أحمد</h2>
             <p className="text-muted-foreground">إليك نظرة سريعة على حالة الصيانة اليوم.</p>
           </div>
-          <Button className="gap-2">
+          <Button className="gap-2" onClick={handleNewOrder}>
             <PlusCircle className="h-4 w-4" />
             أمر عمل جديد
           </Button>
