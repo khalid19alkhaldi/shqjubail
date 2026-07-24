@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Calculator, Send } from "lucide-react";
+import { updateOrderStatus } from "@/lib/data-service";
 
 interface ContractorQuoteModalProps {
   isOpen: boolean;
@@ -23,18 +24,21 @@ interface ContractorQuoteModalProps {
 
 export function ContractorQuoteModal({ isOpen, onOpenChange, orderId, orderTitle }: ContractorQuoteModalProps) {
   const [loading, setLoading] = React.useState(false);
+  const [amount, setAmount] = React.useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     setTimeout(() => {
+      updateOrderStatus(orderId, "تم تقديم عرض مالي", { quote: `${amount} ر.س` });
       setLoading(false);
       onOpenChange(false);
       toast.success("تم إرسال العرض المالي بنجاح", {
         description: `سيتم مراجعة العرض من قبل إدارة الجمعية للطلب ${orderId}`,
       });
-    }, 1500);
+      window.location.reload();
+    }, 1000);
   };
 
   return (
@@ -54,7 +58,15 @@ export function ContractorQuoteModal({ isOpen, onOpenChange, orderId, orderTitle
           <div className="grid gap-4">
             <div className="space-y-2">
               <Label htmlFor="amount" className="text-sm font-bold">المبلغ المطلوب (ر.س)</Label>
-              <Input id="amount" type="number" placeholder="مثال: 1500" required className="rounded-xl" />
+              <Input
+                id="amount"
+                type="number"
+                placeholder="مثال: 1500"
+                required
+                className="rounded-xl"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+              />
             </div>
 
             <div className="space-y-2">

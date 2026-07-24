@@ -22,7 +22,7 @@ import React from "react";
 import { toast } from "sonner";
 import { CheckCircle2, XCircle } from "lucide-react";
 
-import { getOrders } from "@/lib/data-service";
+import { getOrders, updateOrderStatus } from "@/lib/data-service";
 
 export const Route = createFileRoute("/employee/orders")({
   beforeLoad: () => {
@@ -47,12 +47,19 @@ function EmployeeOrders() {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [orders, setOrders] = React.useState<any[]>([]);
 
-  React.useEffect(() => {
+  const refreshOrders = () => {
     setOrders(getOrders());
+  };
+
+  React.useEffect(() => {
+    refreshOrders();
   }, []);
 
   const handleQuoteAction = (action: string, orderId: string) => {
+    const newStatus = action === "اعتماد" ? "قيد التنفيذ" : "مرفوض";
+    updateOrderStatus(orderId, newStatus);
     toast.success(`تم ${action} العرض المالي للطلب ${orderId} بنجاح`);
+    refreshOrders();
   };
 
   return (
