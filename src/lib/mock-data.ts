@@ -34,4 +34,12 @@ export const MOCK_NOTIFICATIONS = [
   { id: "N4", role: "contractor", title: "أمر عمل جديد", desc: "تم إسناد صيانة مكيفات لك", time: "منذ 5 دقائق", unread: true },
   { id: "N5", role: "contractor", title: "اعتماد مالي", desc: "تم اعتماد عرضك للطلب WO-5519", time: "منذ ساعة", unread: true },
   { id: "N6", role: "contractor", title: "صرف فاتورة", desc: "تم تحويل مبلغ الفاتورة INV-2026-01", time: "أمس", unread: false },
+  // For Technicians
+  { id: "N7", role: "technician", title: "مهمة جديدة", desc: "تغيير إضاءة ممر الإدارة", time: "الآن", unread: true },
+];
+
+export const TECH_TASKS = [
+  { id: "T1", title: "إصلاح تسرب صنبور", location: "مسجد الفاروق - الوضوء", priority: "عالية", status: "نشط", time: "09:00 ص" },
+  { id: "T2", title: "تغيير لمبات ليد", location: "مدرسة الفرقان - ممر A", priority: "متوسطة", status: "مجدول", time: "11:00 ص" },
+  { id: "T3", title: "فحص عداد الكهرباء", location: "مبنى الأوقاف", priority: "منخفضة", status: "نشط", time: "01:00 م" },
 ];

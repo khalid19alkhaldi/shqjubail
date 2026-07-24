@@ -1,5 +1,7 @@
-- [x] إضافة بيانات التنبيهات التجريبية في `src/lib/mock-data.ts`
-- [x] إضافة دوال إدارة التنبيهات في `src/lib/data-service.ts`
-- [x] تطوير مكون الجرس في `src/components/PortalLayout.tsx` ليعرض القائمة المنسدلة
-- [x] التحقق من ظهور التنبيهات الصحيحة لكل مستخدم
-- [ ] رفع التعديلات إلى GitHub
+- [x] تحديث `UserRole` في `src/hooks/use-auth.tsx` ليشمل `technician`
+- [x] إضافة بيانات ومهام الفنيين في `src/lib/mock-data.ts`
+- [x] إنشاء صفحة دخول الفنيين `src/routes/technician/login.tsx`
+- [x] إنشاء لوحة تحكم الفني (واجهة جوال) `src/routes/technician/index.tsx`
+- [x] إضافة بوابة الفنيين في الصفحة الرئيسية `src/routes/index.tsx`
+- [x] التحقق من عمل البوابة ومزامنة المهام
+- [x] رفع التعديلات إلى GitHub

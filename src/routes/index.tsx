@@ -262,9 +262,17 @@ function PortalsSection() {
       href: "/employee/login"
     },
     {
+      icon: Wrench,
+      title: "بوابة الفنيين",
+      img: technicianImg,
+      points: ["قائمة المهام اليومية الميدانية", "تحديث حالة الإصلاح لحظياً", "رفع صور المعاينة والإنجاز", "تنبيهات البلاغات العاجلة"],
+      cta: "دخول الفنيين",
+      href: "/technician/login"
+    },
+    {
       icon: HardHat,
       title: "بوابة المقاولين",
-      img: technicianImg,
+      img: heroBuilding,
       points: ["استلام الأوامر المسنَدة والموافقة عليها", "رفع صور «قبل/بعد» وقطع الغيار المستخدمة", "تتبع الفواتير وحالة الدفع", "تقييم الأداء والسمعة"],
       cta: "دخول المقاولين",
       href: "/contractor/login"
@@ -274,9 +282,9 @@ function PortalsSection() {
     <section id="portals" className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-2xl text-center">
         <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold text-primary">البوابات</div>
-        <h2 className="mt-4 text-3xl font-black text-primary-deep sm:text-4xl">بوابتان مصممتان بعناية للموظفين والمقاولين</h2>
+        <h2 className="mt-4 text-3xl font-black text-primary-deep sm:text-4xl">بوابات متكاملة للموظفين والفنيين والمقاولين</h2>
       </div>
-      <div className="mt-14 grid gap-8 lg:grid-cols-2">
+      <div className="mt-14 grid gap-8 lg:grid-cols-3">
         {portals.map((p) => (
           <div key={p.title} className="group overflow-hidden rounded-3xl border border-border bg-card shadow-card-soft transition hover:shadow-elegant">
             <div className="relative h-56 overflow-hidden">
