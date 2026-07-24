@@ -1,0 +1,145 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { PortalLayout } from "@/components/PortalLayout";
+import {
+  LayoutDashboard,
+  ClipboardList,
+  CheckSquare,
+  FileText,
+  Clock,
+  CheckCircle2,
+  HardHat,
+  Camera
+} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+
+export const Route = createFileRoute("/contractor/")({
+  component: ContractorDashboard,
+});
+
+const sidebarItems = [
+  { title: "لوحة التحكم", icon: LayoutDashboard, href: "/contractor" },
+  { title: "الأوامر المسندة", icon: ClipboardList, href: "/contractor/assigned" },
+  { title: "إنجازات سابقة", icon: CheckSquare, href: "/contractor/history" },
+  { title: "الفواتير", icon: FileText, href: "/contractor/invoices" },
+];
+
+const stats = [
+  { title: "أوامر بانتظار البدء", value: "5", icon: Clock, color: "text-amber-600", bg: "bg-amber-100" },
+  { title: "قيد التنفيذ", value: "3", icon: HardHat, color: "text-blue-600", bg: "bg-blue-100" },
+  { title: "تم تسليمه اليوم", value: "2", icon: CheckCircle2, color: "text-green-600", bg: "bg-green-100" },
+  { title: "التقييم العام", value: "4.8", icon: CheckCircle2, color: "text-primary", bg: "bg-primary/10" },
+];
+
+const assignedOrders = [
+  { id: "WO-5601", location: "مدرسة خديجة بنت خويلد", task: "صيانة طفايات الحريق", deadline: "اليوم", priority: "عالية" },
+  { id: "WO-5605", location: "مسجد قباء", task: "إصلاح إضاءة الساحة", deadline: "غداً", priority: "متوسطة" },
+];
+
+function ContractorDashboard() {
+  return (
+    <PortalLayout
+      title="لوحة تحكم المقاول"
+      userName="مؤسسة صيانة الشرق"
+      userRole="مقاول تكييف وكهرباء"
+      items={sidebarItems}
+    >
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-primary-deep">مرحباً مؤسسة صيانة الشرق</h2>
+            <p className="text-muted-foreground">لديك 5 أوامر عمل بانتظار البدء اليوم.</p>
+          </div>
+        </div>
+
+        {/* Stats Grid */}
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {stats.map((s) => (
+            <Card key={s.title} className="border-none shadow-card-soft overflow-hidden">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">{s.title}</p>
+                    <p className="text-2xl font-bold mt-1">{s.value}</p>
+                  </div>
+                  <div className={`h-12 w-12 rounded-xl ${s.bg} flex items-center justify-center ${s.color}`}>
+                    <s.icon className="h-6 w-6" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-3">
+          {/* Assigned Orders List */}
+          <Card className="lg:col-span-2 border-none shadow-card-soft">
+            <CardHeader>
+              <CardTitle className="text-lg">الأوامر المسندة إليكم</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {assignedOrders.map((order) => (
+                  <div key={order.id} className="p-5 rounded-2xl border border-border bg-card shadow-sm">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded-lg mb-2 inline-block">{order.id}</span>
+                        <h3 className="font-bold text-lg">{order.task}</h3>
+                        <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
+                          <span className="font-medium">{order.location}</span>
+                        </p>
+                      </div>
+                      <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${
+                        order.priority === "عالية" ? "bg-red-100 text-red-600" : "bg-blue-100 text-blue-600"
+                      }`}>
+                        {order.priority}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-wrap gap-4 items-center justify-between pt-4 border-t border-dashed">
+                      <div className="text-xs text-muted-foreground">
+                        موعد التسليم: <span className="font-bold text-foreground">{order.deadline}</span>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" className="gap-2">
+                          <Camera className="h-4 w-4" />
+                          رفع صورة
+                        </Button>
+                        <Button size="sm" className="bg-primary hover:bg-primary-deep">
+                          بدء العمل
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Guidelines / Announcements */}
+          <Card className="border-none shadow-card-soft">
+            <CardHeader>
+              <CardTitle className="text-lg">تعليمات هامة</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-4">
+                <li className="flex gap-3">
+                  <div className="h-2 w-2 rounded-full bg-gold mt-2 shrink-0" />
+                  <p className="text-sm text-muted-foreground">يجب رفع صورة "قبل العمل" وصورة "بعد الإنجاز" لكل تذكرة.</p>
+                </li>
+                <li className="flex gap-3">
+                  <div className="h-2 w-2 rounded-full bg-gold mt-2 shrink-0" />
+                  <p className="text-sm text-muted-foreground">يرجى التأكد من توقيع الموظف المسؤول في الموقع بعد الانتهاء.</p>
+                </li>
+                <li className="flex gap-3">
+                  <div className="h-2 w-2 rounded-full bg-gold mt-2 shrink-0" />
+                  <p className="text-sm text-muted-foreground">سيتم صرف الفواتير المعتمدة خلال 15 يوم عمل من تاريخ الاعتماد.</p>
+                </li>
+              </ul>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </PortalLayout>
+  );
+}
