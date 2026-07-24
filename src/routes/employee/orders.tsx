@@ -22,6 +22,8 @@ import React from "react";
 import { toast } from "sonner";
 import { CheckCircle2, XCircle } from "lucide-react";
 
+import { getOrders } from "@/lib/data-service";
+
 export const Route = createFileRoute("/employee/orders")({
   beforeLoad: () => {
     const savedUser = localStorage.getItem("shq_user");
@@ -43,6 +45,11 @@ const sidebarItems = [
 
 function EmployeeOrders() {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [orders, setOrders] = React.useState<any[]>([]);
+
+  React.useEffect(() => {
+    setOrders(getOrders());
+  }, []);
 
   const handleQuoteAction = (action: string, orderId: string) => {
     toast.success(`تم ${action} العرض المالي للطلب ${orderId} بنجاح`);
@@ -85,7 +92,7 @@ function EmployeeOrders() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {MOCK_ORDERS.map((order) => (
+                {orders.map((order) => (
                   <TableRow key={order.id} className="hover:bg-secondary/20 transition-colors">
                     <TableCell className="font-bold">{order.id}</TableCell>
                     <TableCell>

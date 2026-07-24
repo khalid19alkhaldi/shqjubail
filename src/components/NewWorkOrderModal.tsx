@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { ClipboardList, Building2, AlertCircle, Wrench, UserCheck } from "lucide-react";
+import { saveOrder } from "@/lib/data-service";
 
 interface NewWorkOrderModalProps {
   isOpen: boolean;
@@ -28,19 +29,47 @@ interface NewWorkOrderModalProps {
 
 export function NewWorkOrderModal({ isOpen, onOpenChange }: NewWorkOrderModalProps) {
   const [loading, setLoading] = React.useState(false);
+  const [formData, setFormData] = React.useState({
+    title: "",
+    building: "furqan",
+    category: "ac",
+    priority: "high",
+    contractor: "sharq",
+    desc: ""
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
+    const newOrder = {
+      id: `WO-${Math.floor(Math.random() * 1000) + 6000}`,
+      title: formData.title,
+      building: formData.building === "furqan" ? "مدرسة الفرقان" :
+                formData.building === "farooq" ? "مسجد الفاروق" :
+                formData.building === "admin" ? "المبنى الإداري" : "مبنى الأوقاف",
+      priority: formData.priority === "high" ? "عالية" :
+                formData.priority === "medium" ? "متوسطة" : "منخفضة",
+      status: "بانتظار قبول المقاول",
+      date: new Date().toISOString().split('T')[0],
+      category: formData.category === "ac" ? "تكييف" :
+                formData.category === "elec" ? "كهرباء" :
+                formData.category === "plumb" ? "سباكة" : "أمن وسلامة",
+      contractor: formData.contractor === "sharq" ? "مؤسسة صيانة الشرق" : "مؤسسة الجبيل للمقاولات",
+      desc: formData.desc
+    };
+
     // Simulate API call
     setTimeout(() => {
+      saveOrder(newOrder);
       setLoading(false);
       onOpenChange(false);
-      toast.success("تم إنشاء أمر العمل WO-5600 وإسناده بنجاح", {
+      toast.success(`تم إنشاء أمر العمل ${newOrder.id} وإسناده بنجاح`, {
         description: "تم إرسال التنبيه للمقاول المختار للمتابعة.",
       });
-    }, 1500);
+      // Refresh page to see new data in the list
+      window.location.reload();
+    }, 1000);
   };
 
   return (
@@ -61,7 +90,14 @@ export function NewWorkOrderModal({ isOpen, onOpenChange }: NewWorkOrderModalPro
             {/* Title */}
             <div className="space-y-2">
               <Label htmlFor="title" className="text-sm font-bold">عنوان الطلب</Label>
-              <Input id="title" placeholder="مثلاً: صيانة مكيفات الطابق الثاني" required className="rounded-xl" />
+              <Input
+                id="title"
+                placeholder="مثلاً: صيانة مكيفات الطابق الثاني"
+                required
+                className="rounded-xl"
+                value={formData.title}
+                onChange={(e) => setFormData({...formData, title: e.target.value})}
+              />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -70,7 +106,11 @@ export function NewWorkOrderModal({ isOpen, onOpenChange }: NewWorkOrderModalPro
                 <Label className="text-sm font-bold flex items-center gap-1 justify-end">
                   <Building2 className="h-3 w-3" /> المبنى
                 </Label>
-                <Select required>
+                <Select
+                  required
+                  value={formData.building}
+                  onValueChange={(v) => setFormData({...formData, building: v})}
+                >
                   <SelectTrigger className="rounded-xl">
                     <SelectValue placeholder="اختر المبنى" />
                   </SelectTrigger>
@@ -88,7 +128,11 @@ export function NewWorkOrderModal({ isOpen, onOpenChange }: NewWorkOrderModalPro
                 <Label className="text-sm font-bold flex items-center gap-1 justify-end">
                   <Wrench className="h-3 w-3" /> القسم
                 </Label>
-                <Select required>
+                <Select
+                  required
+                  value={formData.category}
+                  onValueChange={(v) => setFormData({...formData, category: v})}
+                >
                   <SelectTrigger className="rounded-xl">
                     <SelectValue placeholder="اختر القسم" />
                   </SelectTrigger>
@@ -108,7 +152,11 @@ export function NewWorkOrderModal({ isOpen, onOpenChange }: NewWorkOrderModalPro
                 <Label className="text-sm font-bold flex items-center gap-1 justify-end">
                   <AlertCircle className="h-3 w-3" /> الأولوية
                 </Label>
-                <Select required>
+                <Select
+                  required
+                  value={formData.priority}
+                  onValueChange={(v) => setFormData({...formData, priority: v})}
+                >
                   <SelectTrigger className="rounded-xl">
                     <SelectValue placeholder="تحديد الأولوية" />
                   </SelectTrigger>
@@ -125,7 +173,10 @@ export function NewWorkOrderModal({ isOpen, onOpenChange }: NewWorkOrderModalPro
                 <Label className="text-sm font-bold flex items-center gap-1 justify-end">
                   <UserCheck className="h-3 w-3" /> إسناد لمقاول
                 </Label>
-                <Select>
+                <Select
+                  value={formData.contractor}
+                  onValueChange={(v) => setFormData({...formData, contractor: v})}
+                >
                   <SelectTrigger className="rounded-xl border-primary/30 bg-primary/5">
                     <SelectValue placeholder="اختياري: اختر مقاول" />
                   </SelectTrigger>
@@ -146,6 +197,8 @@ export function NewWorkOrderModal({ isOpen, onOpenChange }: NewWorkOrderModalPro
                 placeholder="يرجى كتابة تفاصيل المشكلة وأي ملاحظات إضافية..."
                 className="rounded-xl min-h-[100px]"
                 required
+                value={formData.desc}
+                onChange={(e) => setFormData({...formData, desc: e.target.value})}
               />
             </div>
           </div>

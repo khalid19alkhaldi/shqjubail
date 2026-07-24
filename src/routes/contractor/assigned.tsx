@@ -9,6 +9,8 @@ import { toast } from "sonner";
 import React from "react";
 import { ContractorQuoteModal } from "@/components/ContractorQuoteModal";
 
+import { getOrders } from "@/lib/data-service";
+
 export const Route = createFileRoute("/contractor/assigned")({
   beforeLoad: () => {
     const savedUser = localStorage.getItem("shq_user");
@@ -30,6 +32,11 @@ const sidebarItems = [
 function ContractorAssigned() {
   const [selectedOrder, setSelectedOrder] = React.useState<{id: string, title: string} | null>(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [orders, setOrders] = React.useState<any[]>([]);
+
+  React.useEffect(() => {
+    setOrders(getOrders());
+  }, []);
 
   const handleAction = (action: string) => {
     toast.info(`قريباً: تفعيل خاصية ${action}`);
@@ -46,7 +53,7 @@ function ContractorAssigned() {
         <h2 className="text-xl font-bold text-primary-deep">أوامر العمل النشطة</h2>
 
         <div className="space-y-4">
-          {MOCK_ORDERS.filter(o => o.status !== "مكتمل").map((order) => (
+          {orders.filter((o: any) => o.status !== "مكتمل").map((order: any) => (
             <Card key={order.id} className="border-none shadow-card-soft hover:border-gold/30 border transition-all">
               <CardContent className="p-6">
                 <div className="flex flex-col lg:flex-row justify-between gap-6">
