@@ -1,5 +1,10 @@
-- [x] إنشاء صفحات الموظفين الناقصة (`orders`, `preventive`, `buildings`, `reports`)
-- [x] إنشاء صفحات المقاولين الناقصة (`assigned`, `history`, `invoices`)
-- [x] تفعيل زر "أمر عمل جديد" في لوحة تحكم الموظف
-- [x] التحقق من عمل جميع الروابط في القائمة الجانبية
-- [ ] رفع التعديلات إلى GitHub
+- [x] إنشاء ملف البيانات التجريبية `src/lib/mock-data.ts`
+- [x] تطوير صفحة أوامر العمل للموظفين `src/routes/employee/orders.tsx`
+- [x] تطوير صفحة الصيانة الوقائية للموظفين `src/routes/employee/preventive.tsx`
+- [x] تطوير صفحة إدارة المباني للموظفين `src/routes/employee/buildings.tsx`
+- [x] تطوير صفحة التقارير للموظفين `src/routes/employee/reports.tsx`
+- [x] تطوير صفحة الأوامر المسندة للمقاولين `src/routes/contractor/assigned.tsx`
+- [x] تطوير صفحة تاريخ الإنجازات للمقاولين `src/routes/contractor/history.tsx`
+- [x] تطوير صفحة الفواتير للمقاولين `src/routes/contractor/invoices.tsx`
+- [x] التحقق من عمل كافة الصفحات وجمالية التصميم
+- [ ] رفع التعديلات النهائية إلى GitHub
