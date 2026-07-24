@@ -20,7 +20,7 @@ import { MOCK_ORDERS } from "@/lib/mock-data";
 import { NewWorkOrderModal } from "@/components/NewWorkOrderModal";
 import React from "react";
 import { toast } from "sonner";
-import { CheckCircle2, XCircle, MoreVertical } from "lucide-react";
+import { CheckCircle2, XCircle } from "lucide-react";
 
 export const Route = createFileRoute("/employee/orders")({
   beforeLoad: () => {

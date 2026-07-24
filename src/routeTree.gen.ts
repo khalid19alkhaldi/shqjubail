@@ -10,33 +10,180 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ContractorIndexRouteImport } from './routes/contractor/index'
+import { Route as ContractorAssignedRouteImport } from './routes/contractor/assigned'
+import { Route as ContractorHistoryRouteImport } from './routes/contractor/history'
+import { Route as ContractorInvoicesRouteImport } from './routes/contractor/invoices'
+import { Route as ContractorLoginRouteImport } from './routes/contractor/login'
+import { Route as EmployeeIndexRouteImport } from './routes/employee/index'
+import { Route as EmployeeBuildingsRouteImport } from './routes/employee/buildings'
+import { Route as EmployeeLoginRouteImport } from './routes/employee/login'
+import { Route as EmployeeOrdersRouteImport } from './routes/employee/orders'
+import { Route as EmployeePreventiveRouteImport } from './routes/employee/preventive'
+import { Route as EmployeeReportsRouteImport } from './routes/employee/reports'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContractorIndexRoute = ContractorIndexRouteImport.update({
+  id: '/contractor/',
+  path: '/contractor/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContractorAssignedRoute = ContractorAssignedRouteImport.update({
+  id: '/contractor/assigned',
+  path: '/contractor/assigned',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContractorHistoryRoute = ContractorHistoryRouteImport.update({
+  id: '/contractor/history',
+  path: '/contractor/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContractorInvoicesRoute = ContractorInvoicesRouteImport.update({
+  id: '/contractor/invoices',
+  path: '/contractor/invoices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContractorLoginRoute = ContractorLoginRouteImport.update({
+  id: '/contractor/login',
+  path: '/contractor/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmployeeIndexRoute = EmployeeIndexRouteImport.update({
+  id: '/employee/',
+  path: '/employee/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmployeeBuildingsRoute = EmployeeBuildingsRouteImport.update({
+  id: '/employee/buildings',
+  path: '/employee/buildings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmployeeLoginRoute = EmployeeLoginRouteImport.update({
+  id: '/employee/login',
+  path: '/employee/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmployeeOrdersRoute = EmployeeOrdersRouteImport.update({
+  id: '/employee/orders',
+  path: '/employee/orders',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmployeePreventiveRoute = EmployeePreventiveRouteImport.update({
+  id: '/employee/preventive',
+  path: '/employee/preventive',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmployeeReportsRoute = EmployeeReportsRouteImport.update({
+  id: '/employee/reports',
+  path: '/employee/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/contractor/assigned': typeof ContractorAssignedRoute
+  '/contractor/history': typeof ContractorHistoryRoute
+  '/contractor/invoices': typeof ContractorInvoicesRoute
+  '/contractor/login': typeof ContractorLoginRoute
+  '/employee/buildings': typeof EmployeeBuildingsRoute
+  '/employee/login': typeof EmployeeLoginRoute
+  '/employee/orders': typeof EmployeeOrdersRoute
+  '/employee/preventive': typeof EmployeePreventiveRoute
+  '/employee/reports': typeof EmployeeReportsRoute
+  '/contractor/': typeof ContractorIndexRoute
+  '/employee/': typeof EmployeeIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/contractor/assigned': typeof ContractorAssignedRoute
+  '/contractor/history': typeof ContractorHistoryRoute
+  '/contractor/invoices': typeof ContractorInvoicesRoute
+  '/contractor/login': typeof ContractorLoginRoute
+  '/employee/buildings': typeof EmployeeBuildingsRoute
+  '/employee/login': typeof EmployeeLoginRoute
+  '/employee/orders': typeof EmployeeOrdersRoute
+  '/employee/preventive': typeof EmployeePreventiveRoute
+  '/employee/reports': typeof EmployeeReportsRoute
+  '/contractor': typeof ContractorIndexRoute
+  '/employee': typeof EmployeeIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/contractor/assigned': typeof ContractorAssignedRoute
+  '/contractor/history': typeof ContractorHistoryRoute
+  '/contractor/invoices': typeof ContractorInvoicesRoute
+  '/contractor/login': typeof ContractorLoginRoute
+  '/employee/buildings': typeof EmployeeBuildingsRoute
+  '/employee/login': typeof EmployeeLoginRoute
+  '/employee/orders': typeof EmployeeOrdersRoute
+  '/employee/preventive': typeof EmployeePreventiveRoute
+  '/employee/reports': typeof EmployeeReportsRoute
+  '/contractor/': typeof ContractorIndexRoute
+  '/employee/': typeof EmployeeIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/contractor/assigned'
+    | '/contractor/history'
+    | '/contractor/invoices'
+    | '/contractor/login'
+    | '/employee/buildings'
+    | '/employee/login'
+    | '/employee/orders'
+    | '/employee/preventive'
+    | '/employee/reports'
+    | '/contractor/'
+    | '/employee/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/contractor/assigned'
+    | '/contractor/history'
+    | '/contractor/invoices'
+    | '/contractor/login'
+    | '/employee/buildings'
+    | '/employee/login'
+    | '/employee/orders'
+    | '/employee/preventive'
+    | '/employee/reports'
+    | '/contractor'
+    | '/employee'
+  id:
+    | '__root__'
+    | '/'
+    | '/contractor/assigned'
+    | '/contractor/history'
+    | '/contractor/invoices'
+    | '/contractor/login'
+    | '/employee/buildings'
+    | '/employee/login'
+    | '/employee/orders'
+    | '/employee/preventive'
+    | '/employee/reports'
+    | '/contractor/'
+    | '/employee/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ContractorAssignedRoute: typeof ContractorAssignedRoute
+  ContractorHistoryRoute: typeof ContractorHistoryRoute
+  ContractorInvoicesRoute: typeof ContractorInvoicesRoute
+  ContractorLoginRoute: typeof ContractorLoginRoute
+  EmployeeBuildingsRoute: typeof EmployeeBuildingsRoute
+  EmployeeLoginRoute: typeof EmployeeLoginRoute
+  EmployeeOrdersRoute: typeof EmployeeOrdersRoute
+  EmployeePreventiveRoute: typeof EmployeePreventiveRoute
+  EmployeeReportsRoute: typeof EmployeeReportsRoute
+  ContractorIndexRoute: typeof ContractorIndexRoute
+  EmployeeIndexRoute: typeof EmployeeIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +195,99 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contractor/': {
+      id: '/contractor/'
+      path: '/contractor'
+      fullPath: '/contractor/'
+      preLoaderRoute: typeof ContractorIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contractor/assigned': {
+      id: '/contractor/assigned'
+      path: '/contractor/assigned'
+      fullPath: '/contractor/assigned'
+      preLoaderRoute: typeof ContractorAssignedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contractor/history': {
+      id: '/contractor/history'
+      path: '/contractor/history'
+      fullPath: '/contractor/history'
+      preLoaderRoute: typeof ContractorHistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contractor/invoices': {
+      id: '/contractor/invoices'
+      path: '/contractor/invoices'
+      fullPath: '/contractor/invoices'
+      preLoaderRoute: typeof ContractorInvoicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contractor/login': {
+      id: '/contractor/login'
+      path: '/contractor/login'
+      fullPath: '/contractor/login'
+      preLoaderRoute: typeof ContractorLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/employee/': {
+      id: '/employee/'
+      path: '/employee'
+      fullPath: '/employee/'
+      preLoaderRoute: typeof EmployeeIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/employee/buildings': {
+      id: '/employee/buildings'
+      path: '/employee/buildings'
+      fullPath: '/employee/buildings'
+      preLoaderRoute: typeof EmployeeBuildingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/employee/login': {
+      id: '/employee/login'
+      path: '/employee/login'
+      fullPath: '/employee/login'
+      preLoaderRoute: typeof EmployeeLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/employee/orders': {
+      id: '/employee/orders'
+      path: '/employee/orders'
+      fullPath: '/employee/orders'
+      preLoaderRoute: typeof EmployeeOrdersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/employee/preventive': {
+      id: '/employee/preventive'
+      path: '/employee/preventive'
+      fullPath: '/employee/preventive'
+      preLoaderRoute: typeof EmployeePreventiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/employee/reports': {
+      id: '/employee/reports'
+      path: '/employee/reports'
+      fullPath: '/employee/reports'
+      preLoaderRoute: typeof EmployeeReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ContractorAssignedRoute: ContractorAssignedRoute,
+  ContractorHistoryRoute: ContractorHistoryRoute,
+  ContractorInvoicesRoute: ContractorInvoicesRoute,
+  ContractorLoginRoute: ContractorLoginRoute,
+  EmployeeBuildingsRoute: EmployeeBuildingsRoute,
+  EmployeeLoginRoute: EmployeeLoginRoute,
+  EmployeeOrdersRoute: EmployeeOrdersRoute,
+  EmployeePreventiveRoute: EmployeePreventiveRoute,
+  EmployeeReportsRoute: EmployeeReportsRoute,
+  ContractorIndexRoute: ContractorIndexRoute,
+  EmployeeIndexRoute: EmployeeIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
