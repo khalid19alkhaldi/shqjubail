@@ -19,6 +19,8 @@ import { Badge } from "@/components/ui/badge";
 import { MOCK_ORDERS } from "@/lib/mock-data";
 import { NewWorkOrderModal } from "@/components/NewWorkOrderModal";
 import React from "react";
+import { toast } from "sonner";
+import { CheckCircle2, XCircle, MoreVertical } from "lucide-react";
 
 export const Route = createFileRoute("/employee/orders")({
   beforeLoad: () => {
@@ -41,6 +43,10 @@ const sidebarItems = [
 
 function EmployeeOrders() {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  const handleQuoteAction = (action: string, orderId: string) => {
+    toast.success(`تم ${action} العرض المالي للطلب ${orderId} بنجاح`);
+  };
 
   return (
     <PortalLayout title="إدارة أوامر العمل" items={sidebarItems}>
@@ -75,7 +81,7 @@ function EmployeeOrders() {
                   <TableHead className="text-right">الأولوية</TableHead>
                   <TableHead className="text-right">الحالة</TableHead>
                   <TableHead className="text-right">التاريخ</TableHead>
-                  <TableHead className="text-left"></TableHead>
+                  <TableHead className="text-left">الإجراءات</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -97,19 +103,52 @@ function EmployeeOrders() {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-2">
-                        <span className={`h-2 w-2 rounded-full ${
-                          order.status === "مكتمل" ? "bg-green-500" :
-                          order.status === "متأخر" ? "bg-red-500" : "bg-amber-500"
-                        }`} />
-                        <span className="text-sm">{order.status}</span>
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2">
+                          <span className={`h-2 w-2 rounded-full ${
+                            order.status === "مكتمل" ? "bg-green-500" :
+                            order.status === "متأخر" ? "bg-red-500" :
+                            order.status === "تم تقديم عرض مالي" ? "bg-blue-500" : "bg-amber-500"
+                          }`} />
+                          <span className="text-sm font-medium">{order.status}</span>
+                        </div>
+                        {(order as any).quote && (
+                          <div className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md inline-block">
+                            العرض: {(order as any).quote}
+                          </div>
+                        )}
                       </div>
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">{order.date}</TableCell>
                     <TableCell>
-                      <Button variant="ghost" size="icon">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
+                      <div className="flex items-center gap-1">
+                        {order.status === "تم تقديم عرض مالي" ? (
+                          <>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-green-600 hover:text-green-700 hover:bg-green-50 h-8 gap-1"
+                              onClick={() => handleQuoteAction("اعتماد", order.id)}
+                            >
+                              <CheckCircle2 className="h-4 w-4" />
+                              اعتماد
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50 h-8 gap-1"
+                              onClick={() => handleQuoteAction("رفض", order.id)}
+                            >
+                              <XCircle className="h-4 w-4" />
+                              رفض
+                            </Button>
+                          </>
+                        ) : (
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}

@@ -1,9 +1,9 @@
 export const MOCK_ORDERS = [
-  { id: "WO-5521", title: "صيانة مكيفات — مدرسة الفرقان", building: "مدرسة الفرقان", priority: "عالية", status: "نشط", date: "2026-07-24", category: "تكييف" },
-  { id: "WO-5519", title: "إصلاح تسرب مياه — مسجد الفاروق", building: "مسجد الفاروق", priority: "متوسطة", status: "قيد التنفيذ", date: "2026-07-24", category: "سباكة" },
-  { id: "WO-5518", title: "فحص مصعد — مبنى الإدارة", building: "المبنى الإداري", priority: "عالية", status: "مكتمل", date: "2026-07-23", category: "مصاعد" },
-  { id: "WO-5515", title: "تغيير إضاءة القاعات — مدرسة خديجة", building: "مدرسة خديجة", priority: "منخفضة", status: "نشط", date: "2026-07-22", category: "كهرباء" },
-  { id: "WO-5510", title: "صيانة نظام الحريق — مبنى الأوقاف", building: "مبنى الأوقاف", priority: "عالية", status: "متأخر", date: "2026-07-20", category: "أمن وسلامة" },
+  { id: "WO-5521", title: "صيانة مكيفات — مدرسة الفرقان", building: "مدرسة الفرقان", priority: "عالية", status: "نشط", date: "2026-07-24", category: "تكييف", contractor: "مؤسسة صيانة الشرق" },
+  { id: "WO-5600", title: "إصلاح عطل كهربائي مفاجئ", building: "مبنى الأوقاف", priority: "عالية", status: "بانتظار قبول المقاول", date: "2026-07-24", category: "كهرباء", contractor: "مؤسسة صيانة الشرق" },
+  { id: "WO-5601", title: "ترميم دهانات الممرات", building: "مدرسة الفرقان", priority: "متوسطة", status: "تم تقديم عرض مالي", date: "2026-07-24", category: "دهانات", contractor: "مؤسسة صيانة الشرق", quote: "3,500 ر.س" },
+  { id: "WO-5519", title: "إصلاح تسرب مياه — مسجد الفاروق", building: "مسجد الفاروق", priority: "متوسطة", status: "قيد التنفيذ", date: "2026-07-24", category: "سباكة", contractor: "مؤسسة صيانة الشرق" },
+  { id: "WO-5518", title: "فحص مصعد — مبنى الإدارة", building: "المبنى الإداري", priority: "عالية", status: "مكتمل", date: "2026-07-23", category: "مصاعد", contractor: "مؤسسة صيانة الشرق" },
 ];
 
 export const MOCK_BUILDINGS = [

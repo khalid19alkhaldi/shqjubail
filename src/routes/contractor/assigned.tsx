@@ -1,11 +1,13 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { PortalLayout } from "@/components/PortalLayout";
-import { LayoutDashboard, ClipboardList, CheckSquare, FileText, MapPin, Calendar, Clock, Camera, CheckCircle2 } from "lucide-react";
+import { LayoutDashboard, ClipboardList, CheckSquare, FileText, MapPin, Calendar, Clock, Camera, CheckCircle2, XCircle, Calculator } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MOCK_ORDERS } from "@/lib/mock-data";
 import { toast } from "sonner";
+import React from "react";
+import { ContractorQuoteModal } from "@/components/ContractorQuoteModal";
 
 export const Route = createFileRoute("/contractor/assigned")({
   beforeLoad: () => {
@@ -26,8 +28,16 @@ const sidebarItems = [
 ];
 
 function ContractorAssigned() {
+  const [selectedOrder, setSelectedOrder] = React.useState<{id: string, title: string} | null>(null);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+
   const handleAction = (action: string) => {
     toast.info(`قريباً: تفعيل خاصية ${action}`);
+  };
+
+  const handleQuoteClick = (id: string, title: string) => {
+    setSelectedOrder({ id, title });
+    setIsModalOpen(true);
   };
 
   return (
@@ -61,25 +71,45 @@ function ContractorAssigned() {
                   </div>
 
                   <div className="flex flex-wrap lg:flex-col justify-end gap-3 min-w-[180px]">
-                    <Button variant="outline" className="gap-2 rounded-xl flex-1" onClick={() => handleAction("رفع الصور")}>
-                      <Camera className="h-4 w-4" />
-                      رفع صور الإنجاز
-                    </Button>
-                    <Button className="gap-2 rounded-xl flex-1 bg-primary hover:bg-primary-deep" onClick={() => handleAction("إنهاء التذكرة")}>
-                      <CheckCircle2 className="h-4 w-4" />
-                      تأكيد الإنجاز
-                    </Button>
+                    {order.status === "بانتظار قبول المقاول" ? (
+                      <>
+                        <Button className="gap-2 rounded-xl flex-1 bg-primary hover:bg-primary-deep" onClick={() => handleQuoteClick(order.id, order.title)}>
+                          <CheckCircle2 className="h-4 w-4" />
+                          قبول وتقديم عرض مالي
+                        </Button>
+                        <Button variant="outline" className="gap-2 rounded-xl flex-1 text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200" onClick={() => handleAction("رفض العمل")}>
+                          <XCircle className="h-4 w-4" />
+                          رفض العمل
+                        </Button>
+                      </>
+                    ) : order.status === "تم تقديم عرض مالي" ? (
+                      <div className="text-center p-3 bg-blue-50 border border-blue-100 rounded-xl">
+                        <p className="text-xs font-bold text-blue-700">تم تقديم العرض</p>
+                        <p className="text-[10px] text-blue-600 mt-1">بانتظار موافقة الجمعية</p>
+                      </div>
+                    ) : (
+                      <>
+                        <Button variant="outline" className="gap-2 rounded-xl flex-1" onClick={() => handleAction("رفع الصور")}>
+                          <Camera className="h-4 w-4" />
+                          رفع صور الإنجاز
+                        </Button>
+                        <Button className="gap-2 rounded-xl flex-1 bg-primary hover:bg-primary-deep" onClick={() => handleAction("إنهاء التذكرة")}>
+                          <CheckCircle2 className="h-4 w-4" />
+                          تأكيد الإنجاز
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
 
                 <div className="mt-6 pt-4 border-t border-dashed flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
+                    <div className={`h-2 w-2 rounded-full ${order.status === "بانتظار قبول المقاول" ? "bg-amber-500 animate-pulse" : "bg-primary"}`} />
                     <span className="font-medium">الحالة: {order.status}</span>
                   </div>
                   <div className="flex items-center gap-1 text-muted-foreground">
                     <Clock className="h-3 w-3" />
-                    يجب الإنجاز خلال 24 ساعة
+                    {order.status === "بانتظار قبول المقاول" ? "يُرجى الرد على الطلب" : "يجب الإنجاز خلال 24 ساعة"}
                   </div>
                 </div>
               </CardContent>
@@ -87,6 +117,15 @@ function ContractorAssigned() {
           ))}
         </div>
       </div>
+
+      {selectedOrder && (
+        <ContractorQuoteModal
+          isOpen={isModalOpen}
+          onOpenChange={setIsModalOpen}
+          orderId={selectedOrder.id}
+          orderTitle={selectedOrder.title}
+        />
+      )}
     </PortalLayout>
   );
 }
