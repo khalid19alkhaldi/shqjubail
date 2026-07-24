@@ -17,8 +17,7 @@ import {
   Eye,
   FileText,
   MapPin,
-  Calendar,
-  AlertCircle
+  Calendar
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -44,6 +43,7 @@ import {
   DialogDescription,
   DialogFooter
 } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import { getOrders, updateOrderStatus, deleteOrder } from "@/lib/data-service";
 
 export const Route = createFileRoute("/employee/orders")({
@@ -79,9 +79,9 @@ function EmployeeOrders() {
 
     if (searchQuery) {
       allOrders = allOrders.filter((o: any) =>
-        o.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        o.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        o.building.toLowerCase().includes(searchQuery.toLowerCase())
+        (o.title?.toLowerCase().includes(searchQuery.toLowerCase()) || false) ||
+        (o.id?.toLowerCase().includes(searchQuery.toLowerCase()) || false) ||
+        (o.building?.toLowerCase().includes(searchQuery.toLowerCase()) || false)
       );
     }
 
