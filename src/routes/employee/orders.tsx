@@ -20,7 +20,22 @@ import { MOCK_ORDERS } from "@/lib/mock-data";
 import { NewWorkOrderModal } from "@/components/NewWorkOrderModal";
 import React from "react";
 import { toast } from "sonner";
-import { CheckCircle2, XCircle } from "lucide-react";
+import {
+  CheckCircle2,
+  XCircle,
+  Edit,
+  Trash2,
+  Eye,
+  FileText
+} from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import { getOrders, updateOrderStatus } from "@/lib/data-service";
 
@@ -158,9 +173,30 @@ function EmployeeOrders() {
                             </Button>
                           </>
                         ) : (
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" dir="rtl">
+                              <DropdownMenuLabel className="text-right">الإجراءات</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem className="text-right gap-2 cursor-pointer">
+                                <Eye className="h-4 w-4" /> عرض التفاصيل
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="text-right gap-2 cursor-pointer">
+                                <Edit className="h-4 w-4" /> تعديل الطلب
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="text-right gap-2 cursor-pointer">
+                                <FileText className="h-4 w-4" /> طباعة أمر العمل
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem className="text-right gap-2 cursor-pointer text-red-600 focus:text-red-600">
+                                <Trash2 className="h-4 w-4" /> حذف الطلب
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         )}
                       </div>
                     </TableCell>
