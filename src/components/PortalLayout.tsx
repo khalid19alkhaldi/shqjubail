@@ -10,7 +10,8 @@ import {
   ClipboardList,
   Wrench,
   Building2,
-  BarChart3
+  BarChart3,
+  Map as MapIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

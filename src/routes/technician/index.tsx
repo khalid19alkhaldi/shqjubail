@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { TECH_TASKS } from "@/lib/mock-data";
+import { SignatureModal } from "@/components/SignatureModal";
 
 export const Route = createFileRoute("/technician/")({
   beforeLoad: () => {
@@ -39,10 +40,26 @@ const sidebarItems = [
 ];
 
 function TechnicianDashboard() {
+  const [selectedTask, setSelectedTask] = React.useState<any>(null);
+  const [isSignatureModalOpen, setIsSignatureModalOpen] = React.useState(false);
+
   const handleAction = (taskTitle: string, action: string) => {
     toast.success(`${action}: ${taskTitle}`, {
       description: "سيتم تحديث إدارة الصيانة فوراً.",
     });
+  };
+
+  const handleComplete = (task: any) => {
+    setSelectedTask(task);
+    setIsSignatureModalOpen(true);
+  };
+
+  const onSignatureConfirm = () => {
+    if (selectedTask) {
+      toast.success(`تم إكمال المهمة: ${selectedTask.title}`, {
+        description: "تم توثيق التوقيع الرقمي بنجاح.",
+      });
+    }
   };
 
   return (
@@ -116,10 +133,10 @@ function TechnicianDashboard() {
                   <div className="flex gap-2 pt-4 border-t border-dashed border-border/60">
                     <Button
                       className="flex-1 bg-primary hover:bg-primary-deep rounded-xl font-bold h-12 gap-2"
-                      onClick={() => handleAction(task.title, "تم البدء في المهمة")}
+                      onClick={() => handleComplete(task)}
                     >
-                      <Play className="h-4 w-4 fill-current" />
-                      بدء العمل
+                      <CheckCircle2 className="h-4 w-4" />
+                      تم الإنجاز
                     </Button>
                     <Button
                       variant="outline"
@@ -135,6 +152,15 @@ function TechnicianDashboard() {
           ))}
         </div>
       </div>
+
+      {selectedTask && (
+        <SignatureModal
+          isOpen={isSignatureModalOpen}
+          onOpenChange={setIsSignatureModalOpen}
+          onConfirm={onSignatureConfirm}
+          title={selectedTask.title}
+        />
+      )}
     </PortalLayout>
   );
 }

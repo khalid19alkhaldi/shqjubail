@@ -17,7 +17,8 @@ import {
   Eye,
   FileText,
   MapPin,
-  Calendar
+  Calendar,
+  Map as MapIcon
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -62,6 +63,7 @@ export const Route = createFileRoute("/employee/orders")({
 const sidebarItems = [
   { title: "لوحة التحكم", icon: LayoutDashboard, href: "/employee" },
   { title: "أوامر العمل", icon: ClipboardList, href: "/employee/orders" },
+  { title: "خريطة المرافق", icon: MapIcon, href: "/employee/map" },
   { title: "الصيانة الوقائية", icon: Wrench, href: "/employee/preventive" },
   { title: "إدارة المباني", icon: Building2, href: "/employee/buildings" },
   { title: "التقارير", icon: BarChart3, href: "/employee/reports" },

@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { PortalLayout } from "@/components/PortalLayout";
-import { LayoutDashboard, ClipboardList, Wrench, Building2, BarChart3, MapPin, Package, AlertCircle, Plus, Camera } from "lucide-react";
+import { LayoutDashboard, ClipboardList, Wrench, Building2, BarChart3, MapPin, Package, AlertCircle, Plus, Camera, Map as MapIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -41,6 +41,7 @@ export const Route = createFileRoute("/employee/buildings")({
 const sidebarItems = [
   { title: "لوحة التحكم", icon: LayoutDashboard, href: "/employee" },
   { title: "أوامر العمل", icon: ClipboardList, href: "/employee/orders" },
+  { title: "خريطة المرافق", icon: MapIcon, href: "/employee/map" },
   { title: "الصيانة الوقائية", icon: Wrench, href: "/employee/preventive" },
   { title: "إدارة المباني", icon: Building2, href: "/employee/buildings" },
   { title: "التقارير", icon: BarChart3, href: "/employee/reports" },

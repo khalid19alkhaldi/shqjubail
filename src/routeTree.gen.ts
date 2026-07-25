@@ -18,6 +18,7 @@ import { Route as ContractorLoginRouteImport } from './routes/contractor/login'
 import { Route as EmployeeIndexRouteImport } from './routes/employee/index'
 import { Route as EmployeeBuildingsRouteImport } from './routes/employee/buildings'
 import { Route as EmployeeLoginRouteImport } from './routes/employee/login'
+import { Route as EmployeeMapRouteImport } from './routes/employee/map'
 import { Route as EmployeeOrdersRouteImport } from './routes/employee/orders'
 import { Route as EmployeePreventiveRouteImport } from './routes/employee/preventive'
 import { Route as EmployeeReportsRouteImport } from './routes/employee/reports'
@@ -69,6 +70,11 @@ const EmployeeLoginRoute = EmployeeLoginRouteImport.update({
   path: '/employee/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EmployeeMapRoute = EmployeeMapRouteImport.update({
+  id: '/employee/map',
+  path: '/employee/map',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EmployeeOrdersRoute = EmployeeOrdersRouteImport.update({
   id: '/employee/orders',
   path: '/employee/orders',
@@ -103,6 +109,7 @@ export interface FileRoutesByFullPath {
   '/contractor/login': typeof ContractorLoginRoute
   '/employee/buildings': typeof EmployeeBuildingsRoute
   '/employee/login': typeof EmployeeLoginRoute
+  '/employee/map': typeof EmployeeMapRoute
   '/employee/orders': typeof EmployeeOrdersRoute
   '/employee/preventive': typeof EmployeePreventiveRoute
   '/employee/reports': typeof EmployeeReportsRoute
@@ -119,6 +126,7 @@ export interface FileRoutesByTo {
   '/contractor/login': typeof ContractorLoginRoute
   '/employee/buildings': typeof EmployeeBuildingsRoute
   '/employee/login': typeof EmployeeLoginRoute
+  '/employee/map': typeof EmployeeMapRoute
   '/employee/orders': typeof EmployeeOrdersRoute
   '/employee/preventive': typeof EmployeePreventiveRoute
   '/employee/reports': typeof EmployeeReportsRoute
@@ -136,6 +144,7 @@ export interface FileRoutesById {
   '/contractor/login': typeof ContractorLoginRoute
   '/employee/buildings': typeof EmployeeBuildingsRoute
   '/employee/login': typeof EmployeeLoginRoute
+  '/employee/map': typeof EmployeeMapRoute
   '/employee/orders': typeof EmployeeOrdersRoute
   '/employee/preventive': typeof EmployeePreventiveRoute
   '/employee/reports': typeof EmployeeReportsRoute
@@ -154,6 +163,7 @@ export interface FileRouteTypes {
     | '/contractor/login'
     | '/employee/buildings'
     | '/employee/login'
+    | '/employee/map'
     | '/employee/orders'
     | '/employee/preventive'
     | '/employee/reports'
@@ -170,6 +180,7 @@ export interface FileRouteTypes {
     | '/contractor/login'
     | '/employee/buildings'
     | '/employee/login'
+    | '/employee/map'
     | '/employee/orders'
     | '/employee/preventive'
     | '/employee/reports'
@@ -186,6 +197,7 @@ export interface FileRouteTypes {
     | '/contractor/login'
     | '/employee/buildings'
     | '/employee/login'
+    | '/employee/map'
     | '/employee/orders'
     | '/employee/preventive'
     | '/employee/reports'
@@ -203,6 +215,7 @@ export interface RootRouteChildren {
   ContractorLoginRoute: typeof ContractorLoginRoute
   EmployeeBuildingsRoute: typeof EmployeeBuildingsRoute
   EmployeeLoginRoute: typeof EmployeeLoginRoute
+  EmployeeMapRoute: typeof EmployeeMapRoute
   EmployeeOrdersRoute: typeof EmployeeOrdersRoute
   EmployeePreventiveRoute: typeof EmployeePreventiveRoute
   EmployeeReportsRoute: typeof EmployeeReportsRoute
@@ -277,6 +290,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmployeeLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/employee/map': {
+      id: '/employee/map'
+      path: '/employee/map'
+      fullPath: '/employee/map'
+      preLoaderRoute: typeof EmployeeMapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/employee/orders': {
       id: '/employee/orders'
       path: '/employee/orders'
@@ -323,6 +343,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContractorLoginRoute: ContractorLoginRoute,
   EmployeeBuildingsRoute: EmployeeBuildingsRoute,
   EmployeeLoginRoute: EmployeeLoginRoute,
+  EmployeeMapRoute: EmployeeMapRoute,
   EmployeeOrdersRoute: EmployeeOrdersRoute,
   EmployeePreventiveRoute: EmployeePreventiveRoute,
   EmployeeReportsRoute: EmployeeReportsRoute,

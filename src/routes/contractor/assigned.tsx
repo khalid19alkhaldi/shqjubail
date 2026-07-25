@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import React from "react";
 import { ContractorQuoteModal } from "@/components/ContractorQuoteModal";
+import { SignatureModal } from "@/components/SignatureModal";
 import {
   Dialog,
   DialogContent,
@@ -44,6 +45,7 @@ function ContractorAssigned() {
   const [isQuoteModalOpen, setIsQuoteModalOpen] = React.useState(false);
   const [isRejectModalOpen, setIsRejectModalOpen] = React.useState(false);
   const [isUploadModalOpen, setIsAddModalOpen] = React.useState(false);
+  const [isSignatureModalOpen, setIsSignatureModalOpen] = React.useState(false);
   const [orders, setOrders] = React.useState<any[]>([]);
 
   const refreshOrders = () => {
@@ -54,10 +56,17 @@ function ContractorAssigned() {
     refreshOrders();
   }, []);
 
-  const handleConfirmCompletion = (orderId: string) => {
-    updateOrderStatus(orderId, "مكتمل");
-    toast.success("تم تأكيد الإنجاز بنجاح، سيظهر في الأرشيف الآن");
-    refreshOrders();
+  const handleConfirmCompletion = (orderId: string, title: string) => {
+    setSelectedOrder({ id: orderId, title });
+    setIsSignatureModalOpen(true);
+  };
+
+  const onSignatureConfirm = () => {
+    if (selectedOrder) {
+      updateOrderStatus(selectedOrder.id, "مكتمل");
+      toast.success("تم تأكيد الإنجاز وتوثيق التوقيع بنجاح");
+      refreshOrders();
+    }
   };
 
   const handleRejectSubmit = (e: React.FormEvent) => {
@@ -133,7 +142,7 @@ function ContractorAssigned() {
                           <Camera className="h-4 w-4" />
                           رفع صور الإنجاز
                         </Button>
-                        <Button className="gap-2 rounded-xl flex-1 bg-primary hover:bg-primary-deep" onClick={() => handleConfirmCompletion(order.id)}>
+                        <Button className="gap-2 rounded-xl flex-1 bg-primary hover:bg-primary-deep" onClick={() => handleConfirmCompletion(order.id, order.title)}>
                           <CheckCircle2 className="h-4 w-4" />
                           تأكيد الإنجاز
                         </Button>
@@ -216,6 +225,16 @@ function ContractorAssigned() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Signature Modal */}
+      {selectedOrder && (
+        <SignatureModal
+          isOpen={isSignatureModalOpen}
+          onOpenChange={setIsSignatureModalOpen}
+          onConfirm={onSignatureConfirm}
+          title={selectedOrder.title}
+        />
+      )}
     </PortalLayout>
   );
 }

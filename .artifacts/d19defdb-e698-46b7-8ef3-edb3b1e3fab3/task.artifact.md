@@ -1,7 +1,8 @@
-- [x] تحديث `UserRole` في `src/hooks/use-auth.tsx` ليشمل `technician`
-- [x] إضافة بيانات ومهام الفنيين في `src/lib/mock-data.ts`
-- [x] إنشاء صفحة دخول الفنيين `src/routes/technician/login.tsx`
-- [x] إنشاء لوحة تحكم الفني (واجهة جوال) `src/routes/technician/index.tsx`
-- [x] إضافة بوابة الفنيين في الصفحة الرئيسية `src/routes/index.tsx`
-- [x] التحقق من عمل البوابة ومزامنة المهام
-- [x] رفع التعديلات إلى GitHub
+- [ ] تحديث `src/lib/mock-data.ts` بإحداثيات المباني (Latitude, Longitude)
+- [ ] إنشاء مكون التوقيع الرقمي `src/components/SignatureModal.tsx`
+- [ ] إنشاء صفحة الخريطة التفاعلية `src/routes/employee/map.tsx`
+- [ ] إضافة رابط "خريطة المرافق" في القائمة الجانبية للموظف `src/components/PortalLayout.tsx`
+- [ ] ربط نافذة التوقيع في بوابة المقاول `src/routes/contractor/assigned.tsx`
+- [ ] ربط نافذة التوقيع في بوابة الفني `src/routes/technician/index.tsx`
+- [ ] التحقق من عمل الخريطة ولوحة التوقيع
+- [ ] رفع التعديلات إلى GitHub
