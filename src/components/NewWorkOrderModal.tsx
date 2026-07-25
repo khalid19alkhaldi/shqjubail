@@ -38,7 +38,7 @@ export function NewWorkOrderModal({ isOpen, onOpenChange }: NewWorkOrderModalPro
     desc: ""
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
@@ -59,9 +59,8 @@ export function NewWorkOrderModal({ isOpen, onOpenChange }: NewWorkOrderModalPro
       desc: formData.desc
     };
 
-    // Simulate API call
-    setTimeout(() => {
-      saveOrder(newOrder);
+    try {
+      await saveOrder(newOrder);
       setLoading(false);
       onOpenChange(false);
       toast.success(`تم إنشاء أمر العمل ${newOrder.id} وإسناده بنجاح`, {
@@ -69,7 +68,11 @@ export function NewWorkOrderModal({ isOpen, onOpenChange }: NewWorkOrderModalPro
       });
       // Refresh page to see new data in the list
       window.location.reload();
-    }, 1000);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+      toast.error("حدث خطأ أثناء حفظ الطلب. يرجى المحاولة لاحقاً.");
+    }
   };
 
   return (

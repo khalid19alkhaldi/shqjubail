@@ -64,13 +64,13 @@ function TechnicianDashboard() {
     setIsSignatureModalOpen(true);
   };
 
-  const onSignatureConfirm = (signature: string) => {
+  const onSignatureConfirm = async (signature: string) => {
     if (selectedTask) {
       // Simulate task completion in data service
-      const orders = getOrders();
+      const orders = await getOrders();
       const order = orders.find((o: any) => o.id === selectedTask.id || o.title === selectedTask.title);
       if (order) {
-        updateOrderStatus(order.id, "مكتمل", { signature });
+        await updateOrderStatus(order.id, "مكتمل", { signature });
       }
 
       toast.success(`تم إكمال المهمة: ${selectedTask.title}`, {

@@ -78,8 +78,8 @@ function EmployeeOrders() {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [filterPriority, setFilterPriority] = React.useState<string>("all");
 
-  const refreshOrders = () => {
-    let allOrders = getOrders();
+  const refreshOrders = async () => {
+    let allOrders = await getOrders();
 
     if (searchQuery) {
       allOrders = allOrders.filter((o: any) =>
@@ -100,16 +100,16 @@ function EmployeeOrders() {
     refreshOrders();
   }, [searchQuery, filterPriority]);
 
-  const handleQuoteAction = (action: string, orderId: string) => {
+  const handleQuoteAction = async (action: string, orderId: string) => {
     const newStatus = action === "اعتماد" ? "قيد التنفيذ" : "مرفوض";
-    updateOrderStatus(orderId, newStatus);
+    await updateOrderStatus(orderId, newStatus);
     toast.success(`تم ${action} العرض المالي للطلب ${orderId} بنجاح`);
     refreshOrders();
   };
 
-  const handleDelete = (orderId: string) => {
+  const handleDelete = async (orderId: string) => {
     if (confirm("هل أنت متأكد من حذف هذا الطلب؟")) {
-      deleteOrder(orderId);
+      await deleteOrder(orderId);
       toast.success("تم حذف الطلب بنجاح");
       refreshOrders();
     }

@@ -46,9 +46,13 @@ export function PortalLayout({ children, title, items }: PortalLayoutProps) {
   const { user, logout } = useAuth();
 
   React.useEffect(() => {
-    if (user?.role) {
-      setNotifications(getNotifications(user.role));
-    }
+    const fetchNotifications = async () => {
+      if (user?.role) {
+        const data = await getNotifications(user.role);
+        setNotifications(data);
+      }
+    };
+    fetchNotifications();
   }, [user]);
 
   const handleLogout = () => {
@@ -56,10 +60,11 @@ export function PortalLayout({ children, title, items }: PortalLayoutProps) {
     navigate({ to: "/" });
   };
 
-  const handleMarkAllRead = () => {
+  const handleMarkAllRead = async () => {
     if (user?.role) {
-      markNotificationsAsRead(user.role);
-      setNotifications(getNotifications(user.role));
+      await markNotificationsAsRead(user.role);
+      const data = await getNotifications(user.role);
+      setNotifications(data);
     }
   };
 

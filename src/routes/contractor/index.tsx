@@ -50,8 +50,14 @@ function ContractorDashboard() {
   const [statsData, setStatsData] = React.useState<any>(null);
 
   React.useEffect(() => {
-    setOrders(getOrders().filter((o: any) => o.status !== "مكتمل").slice(0, 2));
-    setStatsData(getDashboardStats());
+    const fetchData = async () => {
+      const fetchedOrders = await getOrders();
+      setOrders(fetchedOrders.filter((o: any) => o.status !== "مكتمل").slice(0, 2));
+
+      const stats = await getDashboardStats();
+      setStatsData(stats);
+    };
+    fetchData();
   }, []);
 
   const handleAction = (action: string) => {

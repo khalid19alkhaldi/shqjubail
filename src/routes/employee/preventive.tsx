@@ -51,21 +51,22 @@ function EmployeePreventive() {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
-  const refreshTasks = () => {
-    setTasks(getPreventiveTasks());
+  const refreshTasks = async () => {
+    const data = await getPreventiveTasks();
+    setTasks(data);
   };
 
   React.useEffect(() => {
     refreshTasks();
   }, []);
 
-  const handleApprove = (taskId: string) => {
-    approvePreventiveTask(taskId);
+  const handleApprove = async (taskId: string) => {
+    await approvePreventiveTask(taskId);
     toast.success("تم تعميد المهمة وتحديث التاريخ القادم بنجاح");
     refreshTasks();
   };
 
-  const handleCreateTask = (e: React.FormEvent) => {
+  const handleCreateTask = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
@@ -77,13 +78,16 @@ function EmployeePreventive() {
       status: "مجدول"
     };
 
-    setTimeout(() => {
-      savePreventiveTask(newTask);
+    try {
+      await savePreventiveTask(newTask);
       setLoading(false);
       setIsModalOpen(false);
       toast.success("تمت إضافة مهمة الصيانة الوقائية بنجاح");
       refreshTasks();
-    }, 1000);
+    } catch (error) {
+      setLoading(false);
+      toast.error("خطأ في حفظ المهمة");
+    }
   };
 
   return (

@@ -55,8 +55,14 @@ function EmployeeDashboard() {
   const [statsData, setStatsData] = React.useState<any>(null);
 
   React.useEffect(() => {
-    setOrders(getOrders().slice(0, 3));
-    setStatsData(getDashboardStats());
+    const fetchData = async () => {
+      const fetchedOrders = await getOrders();
+      setOrders(fetchedOrders.slice(0, 3));
+
+      const stats = await getDashboardStats();
+      setStatsData(stats);
+    };
+    fetchData();
   }, []);
 
   const displayStats = statsData ? [
@@ -87,7 +93,7 @@ function EmployeeDashboard() {
 
         {/* Stats Grid */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {displayStats.map((s) => (
+          {displayStats && displayStats.length > 0 ? displayStats.map((s) => (
             <Card key={s.title} className="border-none shadow-card-soft overflow-hidden">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
@@ -101,7 +107,11 @@ function EmployeeDashboard() {
                 </div>
               </CardContent>
             </Card>
-          ))}
+          )) : (
+            Array(4).fill(0).map((_, i) => (
+              <Card key={i} className="border-none shadow-card-soft h-32 animate-pulse bg-secondary/20" />
+            ))
+          )}
         </div>
 
         <div className="grid gap-6 lg:grid-cols-3">

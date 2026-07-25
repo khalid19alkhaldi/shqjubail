@@ -64,15 +64,16 @@ function EmployeeBuildings() {
     otherContents: ""
   });
 
-  const refreshBuildings = () => {
-    setBuildings(getBuildings());
+  const refreshBuildings = async () => {
+    const data = await getBuildings();
+    setBuildings(data);
   };
 
   React.useEffect(() => {
     refreshBuildings();
   }, []);
 
-  const handleAddBuilding = (e: React.FormEvent) => {
+  const handleAddBuilding = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
@@ -81,7 +82,7 @@ function EmployeeBuildings() {
       name: formData.name,
       type: formData.type,
       assets: parseInt(formData.splitAC) + parseInt(formData.concealedAC),
-      activeOrders: 0,
+      active_orders: 0,
       image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&auto=format&fit=crop",
       lat: 27.01 + Math.random() * 0.02,
       lng: 49.65 + Math.random() * 0.02,
@@ -93,8 +94,8 @@ function EmployeeBuildings() {
       }
     };
 
-    setTimeout(() => {
-      addBuilding(newBuilding);
+    try {
+      await addBuilding(newBuilding);
       setLoading(false);
       setIsAddModalOpen(false);
       setFormData({
@@ -107,7 +108,10 @@ function EmployeeBuildings() {
       });
       toast.success("تمت إضافة المرفق الجديد بنجاح");
       refreshBuildings();
-    }, 1200);
+    } catch (error) {
+      setLoading(false);
+      toast.error("خطأ في إضافة المرفق");
+    }
   };
 
   return (

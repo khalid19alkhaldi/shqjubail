@@ -1,142 +1,205 @@
+import { supabase } from "./supabase";
 import { MOCK_ORDERS, PREVENTIVE_TASKS, MOCK_BUILDINGS, MOCK_NOTIFICATIONS } from "./mock-data";
 
 const isClient = typeof window !== "undefined";
 
 // Notifications
-export const getNotifications = (role: string) => {
-  if (!isClient) return [];
-  const saved = localStorage.getItem("shq_notifications");
-  let notifications = saved ? JSON.parse(saved) : MOCK_NOTIFICATIONS;
+export const getNotifications = async (role: string) => {
+  if (!isClient) return MOCK_NOTIFICATIONS.filter((n: any) => n.role === role);
+  try {
+    const { data, error } = await supabase
+      .from('notifications')
+      .select('*')
+      .eq('role', role)
+      .order('created_at', { ascending: false });
 
-  if (!saved) {
-    localStorage.setItem("shq_notifications", JSON.stringify(MOCK_NOTIFICATIONS));
+    if (error) throw error;
+    return data || [];
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+    return MOCK_NOTIFICATIONS.filter((n: any) => n.role === role);
   }
-
-  return notifications.filter((n: any) => n.role === role);
 };
 
-export const markNotificationsAsRead = (role: string) => {
+export const markNotificationsAsRead = async (role: string) => {
   if (!isClient) return;
-  const saved = localStorage.getItem("shq_notifications");
-  let notifications = saved ? JSON.parse(saved) : MOCK_NOTIFICATIONS;
+  try {
+    const { error } = await supabase
+      .from('notifications')
+      .update({ unread: false })
+      .eq('role', role);
 
-  const updated = notifications.map((n: any) =>
-    n.role === role ? { ...n, unread: false } : n
-  );
-
-  localStorage.setItem("shq_notifications", JSON.stringify(updated));
-  return updated;
+    if (error) throw error;
+  } catch (error) {
+    console.error("Error marking notifications read:", error);
+  }
 };
 
 // Orders
-export const getOrders = () => {
+export const getOrders = async () => {
   if (!isClient) return MOCK_ORDERS;
-  const saved = localStorage.getItem("shq_orders");
-  if (!saved) {
-    localStorage.setItem("shq_orders", JSON.stringify(MOCK_ORDERS));
-    return MOCK_ORDERS;
-  }
   try {
-    return JSON.parse(saved);
-  } catch (e) {
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data || [];
+  } catch (error) {
+    console.error("Error fetching orders:", error);
     return MOCK_ORDERS;
   }
 };
 
-export const saveOrder = (newOrder: any) => {
-  if (!isClient) return [newOrder, ...MOCK_ORDERS];
-  const orders = getOrders();
-  const updated = [newOrder, ...orders];
-  localStorage.setItem("shq_orders", JSON.stringify(updated));
-  return updated;
+export const saveOrder = async (newOrder: any) => {
+  if (!isClient) return;
+  try {
+    const { error } = await supabase
+      .from('orders')
+      .insert([newOrder]);
+
+    if (error) throw error;
+  } catch (error) {
+    console.error("Error saving order:", error);
+    // Fallback to local storage
+    const saved = localStorage.getItem("shq_orders");
+    const orders = saved ? JSON.parse(saved) : MOCK_ORDERS;
+    localStorage.setItem("shq_orders", JSON.stringify([newOrder, ...orders]));
+  }
 };
 
-export const deleteOrder = (orderId: string) => {
-  if (!isClient) return MOCK_ORDERS;
-  const orders = getOrders();
-  const updated = orders.filter((o: any) => o.id !== orderId);
-  localStorage.setItem("shq_orders", JSON.stringify(updated));
-  return updated;
+export const deleteOrder = async (orderId: string) => {
+  if (!isClient) return;
+  try {
+    const { error } = await supabase
+      .from('orders')
+      .delete()
+      .eq('id', orderId);
+
+    if (error) throw error;
+  } catch (error) {
+    console.error("Error deleting order:", error);
+    const saved = localStorage.getItem("shq_orders");
+    if (saved) {
+      const orders = JSON.parse(saved);
+      localStorage.setItem("shq_orders", JSON.stringify(orders.filter((o: any) => o.id !== orderId)));
+    }
+  }
 };
 
-export const updateOrderStatus = (orderId: string, status: string, extraData = {}) => {
-  if (!isClient) return MOCK_ORDERS;
-  const orders = getOrders();
-  const updated = orders.map((o: any) =>
-    o.id === orderId ? { ...o, status, ...extraData } : o
-  );
-  localStorage.setItem("shq_orders", JSON.stringify(updated));
-  return updated;
+export const updateOrderStatus = async (orderId: string, status: string, extraData = {}) => {
+  if (!isClient) return;
+  try {
+    const { error } = await supabase
+      .from('orders')
+      .update({ status, ...extraData })
+      .eq('id', orderId);
+
+    if (error) throw error;
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    const saved = localStorage.getItem("shq_orders");
+    if (saved) {
+      const orders = JSON.parse(saved);
+      const updated = orders.map((o: any) => o.id === orderId ? { ...o, status, ...extraData } : o);
+      localStorage.setItem("shq_orders", JSON.stringify(updated));
+    }
+  }
 };
 
 // Statistics
-export const getDashboardStats = () => {
-  const orders = getOrders();
-  const active = orders.filter((o: any) => o.status !== "مكتمل" && o.status !== "مرفوض من المقاول").length;
-  const completed = orders.filter((o: any) => o.status === "مكتمل").length;
-  const pendingApproval = orders.filter((o: any) => o.status === "تم تقديم عرض مالي").length;
-  const buildings = getBuildings().length;
+export const getDashboardStats = async () => {
+  try {
+    const orders = await getOrders();
+    const buildings = await getBuildings();
 
-  return { active, completed, pendingApproval, buildings };
+    const active = orders.filter((o: any) => o.status !== "مكتمل" && o.status !== "مرفوض من المقاول").length;
+    const completed = orders.filter((o: any) => o.status === "مكتمل").length;
+    const pendingApproval = orders.filter((o: any) => o.status === "تم تقديم عرض مالي").length;
+
+    return { active, completed, pendingApproval, buildings: buildings.length };
+  } catch (error) {
+    return { active: 0, completed: 0, pendingApproval: 0, buildings: 0 };
+  }
 };
 
 // Preventive Tasks
-export const getPreventiveTasks = () => {
+export const getPreventiveTasks = async () => {
   if (!isClient) return PREVENTIVE_TASKS;
-  const saved = localStorage.getItem("shq_preventive");
-  if (!saved) {
-    localStorage.setItem("shq_preventive", JSON.stringify(PREVENTIVE_TASKS));
-    return PREVENTIVE_TASKS;
-  }
   try {
-    return JSON.parse(saved);
-  } catch (e) {
+    const { data, error } = await supabase
+      .from('preventive_tasks')
+      .select('*')
+      .order('next_date', { ascending: true });
+
+    if (error) throw error;
+    return data || [];
+  } catch (error) {
+    console.error("Error fetching preventive tasks:", error);
     return PREVENTIVE_TASKS;
   }
 };
 
-export const savePreventiveTask = (newTask: any) => {
-  if (!isClient) return [newTask, ...PREVENTIVE_TASKS];
-  const tasks = getPreventiveTasks();
-  const updated = [newTask, ...tasks];
-  localStorage.setItem("shq_preventive", JSON.stringify(updated));
-  return updated;
+export const savePreventiveTask = async (newTask: any) => {
+  if (!isClient) return;
+  try {
+    const { error } = await supabase
+      .from('preventive_tasks')
+      .insert([newTask]);
+
+    if (error) throw error;
+  } catch (error) {
+    console.error("Error saving preventive task:", error);
+  }
 };
 
-export const approvePreventiveTask = (taskId: string) => {
-  if (!isClient) return PREVENTIVE_TASKS;
-  const tasks = getPreventiveTasks();
-  const updated = tasks.map((t: any) => {
-    if (t.id === taskId) {
-      const nextDate = new Date();
-      nextDate.setMonth(nextDate.getMonth() + 3);
-      return { ...t, status: "تم التعميد", nextDate: nextDate.toISOString().split('T')[0] };
-    }
-    return t;
-  });
-  localStorage.setItem("shq_preventive", JSON.stringify(updated));
-  return updated;
+export const approvePreventiveTask = async (taskId: string) => {
+  if (!isClient) return;
+  try {
+    const nextDate = new Date();
+    nextDate.setMonth(nextDate.getMonth() + 3);
+
+    const { error } = await supabase
+      .from('preventive_tasks')
+      .update({
+        status: "تم التعميد",
+        next_date: nextDate.toISOString().split('T')[0]
+      })
+      .eq('id', taskId);
+
+    if (error) throw error;
+  } catch (error) {
+    console.error("Error approving preventive task:", error);
+  }
 };
 
 // Buildings
-export const getBuildings = () => {
+export const getBuildings = async () => {
   if (!isClient) return MOCK_BUILDINGS;
-  const saved = localStorage.getItem("shq_buildings");
-  if (!saved) {
-    localStorage.setItem("shq_buildings", JSON.stringify(MOCK_BUILDINGS));
-    return MOCK_BUILDINGS;
-  }
   try {
-    return JSON.parse(saved);
-  } catch (e) {
+    const { data, error } = await supabase
+      .from('buildings')
+      .select('*')
+      .order('name', { ascending: true });
+
+    if (error) throw error;
+    return data || [];
+  } catch (error) {
+    console.error("Error fetching buildings:", error);
     return MOCK_BUILDINGS;
   }
 };
 
-export const addBuilding = (newBuilding: any) => {
-  if (!isClient) return [newBuilding, ...MOCK_BUILDINGS];
-  const buildings = getBuildings();
-  const updated = [newBuilding, ...buildings];
-  localStorage.setItem("shq_buildings", JSON.stringify(updated));
-  return updated;
+export const addBuilding = async (newBuilding: any) => {
+  if (!isClient) return;
+  try {
+    const { error } = await supabase
+      .from('buildings')
+      .insert([newBuilding]);
+
+    if (error) throw error;
+  } catch (error) {
+    console.error("Error adding building:", error);
+  }
 };
