@@ -1,8 +1,5 @@
-- [ ] تحديث `src/lib/mock-data.ts` بإحداثيات المباني (Latitude, Longitude)
-- [ ] إنشاء مكون التوقيع الرقمي `src/components/SignatureModal.tsx`
-- [ ] إنشاء صفحة الخريطة التفاعلية `src/routes/employee/map.tsx`
-- [ ] إضافة رابط "خريطة المرافق" في القائمة الجانبية للموظف `src/components/PortalLayout.tsx`
-- [ ] ربط نافذة التوقيع في بوابة المقاول `src/routes/contractor/assigned.tsx`
-- [ ] ربط نافذة التوقيع في بوابة الفني `src/routes/technician/index.tsx`
-- [ ] التحقق من عمل الخريطة ولوحة التوقيع
+- [ ] تحديث `src/lib/mock-data.ts` ليشمل تفاصيل الأصول للمباني الافتراضية
+- [ ] تحديث نموذج إضافة المبنى في `src/routes/employee/buildings.tsx` ليشمل حقول المكيفات والأنظمة والمحتويات
+- [ ] تحديث نافذة عرض التفاصيل في `src/routes/employee/buildings.tsx` لتعرض البيانات الديناميكية
+- [ ] التحقق من عمل الإضافة والعرض بشكل صحيح
 - [ ] رفع التعديلات إلى GitHub

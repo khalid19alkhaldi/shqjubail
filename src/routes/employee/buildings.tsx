@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { getBuildings, addBuilding } from "@/lib/data-service";
 import React from "react";
 import { toast } from "sonner";
@@ -53,6 +54,16 @@ function EmployeeBuildings() {
   const [isAddModalOpen, setIsAddModalOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
+  // Form State
+  const [formData, setFormData] = React.useState({
+    name: "",
+    type: "تعليمي",
+    splitAC: "0",
+    concealedAC: "0",
+    fireSystem: "نشط",
+    otherContents: ""
+  });
+
   const refreshBuildings = () => {
     setBuildings(getBuildings());
   };
@@ -67,17 +78,33 @@ function EmployeeBuildings() {
 
     const newBuilding = {
       id: `B${Math.floor(Math.random() * 1000)}`,
-      name: "مبنى جديد للجمعية",
-      type: "تعليمي",
-      assets: 0,
+      name: formData.name,
+      type: formData.type,
+      assets: parseInt(formData.splitAC) + parseInt(formData.concealedAC),
       activeOrders: 0,
-      image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&auto=format&fit=crop"
+      image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&auto=format&fit=crop",
+      lat: 27.01 + Math.random() * 0.02,
+      lng: 49.65 + Math.random() * 0.02,
+      details: {
+        splitAC: parseInt(formData.splitAC),
+        concealedAC: parseInt(formData.concealedAC),
+        fireSystem: formData.fireSystem,
+        otherContents: formData.otherContents
+      }
     };
 
     setTimeout(() => {
       addBuilding(newBuilding);
       setLoading(false);
       setIsAddModalOpen(false);
+      setFormData({
+        name: "",
+        type: "تعليمي",
+        splitAC: "0",
+        concealedAC: "0",
+        fireSystem: "نشط",
+        otherContents: ""
+      });
       toast.success("تمت إضافة المرفق الجديد بنجاح");
       refreshBuildings();
     }, 1200);
@@ -142,7 +169,7 @@ function EmployeeBuildings() {
               تفاصيل {selectedBuilding?.name}
             </DialogTitle>
             <DialogDescription className="text-right">
-              قائمة الأصول المسجلة في هذا المرفق.
+              قائمة الأصول والملحقات المسجلة في هذا المرفق.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
@@ -153,16 +180,22 @@ function EmployeeBuildings() {
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">مكيفات سبيلت:</span>
-                <span className="font-bold">12 وحدة</span>
+                <span className="font-bold">{selectedBuilding?.details?.splitAC || 0} وحدة</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">مكيفات كونسيلد:</span>
-                <span className="font-bold">4 وحدات</span>
+                <span className="font-bold">{selectedBuilding?.details?.concealedAC || 0} وحدات</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">أنظمة إطفاء:</span>
-                <span className="font-bold">موجود (نشط)</span>
+                <span className="font-bold">{selectedBuilding?.details?.fireSystem || "غير محدد"}</span>
               </div>
+              {selectedBuilding?.details?.otherContents && (
+                <div className="pt-2 border-t border-white/20">
+                  <div className="text-[10px] text-muted-foreground mb-1">مرفقات أخرى (داخلية/خارجية):</div>
+                  <div className="text-sm font-medium">{selectedBuilding.details.otherContents}</div>
+                </div>
+              )}
             </div>
             <Button className="w-full rounded-xl font-bold" onClick={() => toast.info("تحميل سجل الأصول PDF")}>
               تحميل سجل الأصول
@@ -173,36 +206,91 @@ function EmployeeBuildings() {
 
       {/* Add Building Modal */}
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
-        <DialogContent className="sm:max-w-[450px]" dir="rtl">
+        <DialogContent className="sm:max-w-[500px]" dir="rtl">
           <DialogHeader>
             <DialogTitle className="text-right font-bold text-primary-deep">إضافة مرفق جديد</DialogTitle>
+            <DialogDescription className="text-right">أدخل بيانات المرفق وتفاصيل الأصول الموجودة به.</DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleAddBuilding} className="space-y-5 py-4 text-right">
+          <form onSubmit={handleAddBuilding} className="space-y-4 py-4 text-right">
             <div className="space-y-2">
               <Label className="font-bold">اسم المرفق</Label>
-              <Input placeholder="مثلاً: مدرسة تحفيظ جديدة" required className="rounded-xl" />
+              <Input
+                placeholder="مثلاً: مدرسة تحفيظ جديدة"
+                required
+                className="rounded-xl"
+                value={formData.name}
+                onChange={(e) => setFormData({...formData, name: e.target.value})}
+              />
             </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="font-bold">نوع المرفق</Label>
+                <Select value={formData.type} onValueChange={(v) => setFormData({...formData, type: v})}>
+                  <SelectTrigger className="rounded-xl text-right">
+                    <SelectValue placeholder="اختر النوع" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="تعليمي">تعليمي</SelectItem>
+                    <SelectItem value="ديني">ديني (مسجد)</SelectItem>
+                    <SelectItem value="إداري">إداري</SelectItem>
+                    <SelectItem value="استثماري">استثماري (أوقاف)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label className="font-bold">نظام الحريق</Label>
+                <Select value={formData.fireSystem} onValueChange={(v) => setFormData({...formData, fireSystem: v})}>
+                  <SelectTrigger className="rounded-xl text-right">
+                    <SelectValue placeholder="الحالة" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="نشط">نشط</SelectItem>
+                    <SelectItem value="تحت الصيانة">تحت الصيانة</SelectItem>
+                    <SelectItem value="غير متوفر">غير متوفر</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="font-bold text-xs">عدد مكيفات سبليت</Label>
+                <Input
+                  type="number"
+                  className="rounded-xl"
+                  value={formData.splitAC}
+                  onChange={(e) => setFormData({...formData, splitAC: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="font-bold text-xs">عدد مكيفات كونسيلد</Label>
+                <Input
+                  type="number"
+                  className="rounded-xl"
+                  value={formData.concealedAC}
+                  onChange={(e) => setFormData({...formData, concealedAC: e.target.value})}
+                />
+              </div>
+            </div>
+
             <div className="space-y-2">
-              <Label className="font-bold">نوع المرفق</Label>
-              <Select defaultValue="edu">
-                <SelectTrigger className="rounded-xl text-right">
-                  <SelectValue placeholder="اختر النوع" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="edu">تعليمي</SelectItem>
-                  <SelectItem value="rel">ديني (مسجد)</SelectItem>
-                  <SelectItem value="adm">إداري</SelectItem>
-                  <SelectItem value="inv">استثماري (أوقاف)</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label className="font-bold">محتويات أخرى (داخلية وخارجية)</Label>
+              <Textarea
+                placeholder="مثلاً: مظلات خارجية، خزانات مياه سعة 5000 لتر، نظام ري آلي..."
+                className="rounded-xl min-h-[80px]"
+                value={formData.otherContents}
+                onChange={(e) => setFormData({...formData, otherContents: e.target.value})}
+              />
             </div>
-            <div className="p-10 border-2 border-dashed border-border rounded-2xl text-center bg-secondary/10 cursor-pointer hover:bg-secondary/20 transition-colors">
-              <Camera className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
-              <div className="text-xs text-muted-foreground">رفع صورة المرفق</div>
+
+            <div className="p-6 border-2 border-dashed border-border rounded-2xl text-center bg-secondary/10 cursor-pointer hover:bg-secondary/20 transition-colors">
+              <Camera className="h-6 w-6 mx-auto text-muted-foreground mb-1" />
+              <div className="text-[10px] text-muted-foreground">رفع صورة المرفق</div>
             </div>
+
             <DialogFooter>
-              <Button type="submit" className="w-full rounded-xl font-bold" disabled={loading}>
-                {loading ? "جاري الحفظ..." : "حفظ المرفق"}
+              <Button type="submit" className="w-full rounded-xl font-bold bg-primary h-12" disabled={loading}>
+                {loading ? "جاري الحفظ..." : "حفظ المرفق وبيانات الأصول"}
               </Button>
             </DialogFooter>
           </form>
