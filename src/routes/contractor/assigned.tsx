@@ -61,9 +61,9 @@ function ContractorAssigned() {
     setIsSignatureModalOpen(true);
   };
 
-  const onSignatureConfirm = () => {
+  const onSignatureConfirm = (signature: string) => {
     if (selectedOrder) {
-      updateOrderStatus(selectedOrder.id, "مكتمل");
+      updateOrderStatus(selectedOrder.id, "مكتمل", { signature });
       toast.success("تم تأكيد الإنجاز وتوثيق التوقيع بنجاح");
       refreshOrders();
     }

@@ -15,7 +15,7 @@ import { CheckCircle2, Eraser } from "lucide-react";
 interface SignatureModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  onConfirm: () => void;
+  onConfirm: (signature: string) => void;
   title: string;
 }
 
@@ -32,11 +32,12 @@ export function SignatureModal({ isOpen, onOpenChange, onConfirm, title }: Signa
       return;
     }
 
-    // In a real app, you would save the signature dataURL
-    // const signatureData = sigCanvas.current?.getTrimmedCanvas().toDataURL('image/png');
+    const signatureData = sigCanvas.current?.getTrimmedCanvas().toDataURL('image/png');
 
-    onConfirm();
-    onOpenChange(false);
+    if (signatureData) {
+      onConfirm(signatureData);
+      onOpenChange(false);
+    }
   };
 
   return (

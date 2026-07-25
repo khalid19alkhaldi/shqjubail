@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { TECH_TASKS } from "@/lib/mock-data";
 import { SignatureModal } from "@/components/SignatureModal";
+import { getOrders, updateOrderStatus } from "@/lib/data-service";
 
 export const Route = createFileRoute("/technician/")({
   beforeLoad: () => {
@@ -54,8 +55,15 @@ function TechnicianDashboard() {
     setIsSignatureModalOpen(true);
   };
 
-  const onSignatureConfirm = () => {
+  const onSignatureConfirm = (signature: string) => {
     if (selectedTask) {
+      // Simulate task completion in data service
+      const orders = getOrders();
+      const order = orders.find((o: any) => o.id === selectedTask.id || o.title === selectedTask.title);
+      if (order) {
+        updateOrderStatus(order.id, "مكتمل", { signature });
+      }
+
       toast.success(`تم إكمال المهمة: ${selectedTask.title}`, {
         description: "تم توثيق التوقيع الرقمي بنجاح.",
       });

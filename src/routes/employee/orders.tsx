@@ -318,6 +318,22 @@ function EmployeeOrders() {
               </div>
               <Badge className="bg-gold text-gold-foreground font-bold">{selectedOrder?.status}</Badge>
             </div>
+
+            {selectedOrder?.signature && (
+              <div className="space-y-2">
+                <Label className="font-bold flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  توقيع استلام العمل
+                </Label>
+                <div className="p-2 rounded-xl border border-border bg-secondary/10">
+                  <img
+                    src={selectedOrder.signature}
+                    alt="التوقيع"
+                    className="w-full h-32 object-contain"
+                  />
+                </div>
+              </div>
+            )}
           </div>
           <DialogFooter>
             <Button variant="outline" className="w-full rounded-xl" onClick={() => setSelectedOrder(null)}>إغلاق</Button>
