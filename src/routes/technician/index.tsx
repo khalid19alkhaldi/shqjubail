@@ -19,6 +19,8 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { TECH_TASKS } from "@/lib/mock-data";
 import { SignatureModal } from "@/components/SignatureModal";
+import { AiAssistantModal } from "@/components/AiAssistantModal";
+import { BrainCircuit } from "lucide-react";
 import { getOrders, updateOrderStatus } from "@/lib/data-service";
 
 export const Route = createFileRoute("/technician/")({
@@ -42,12 +44,19 @@ const sidebarItems = [
 
 function TechnicianDashboard() {
   const [selectedTask, setSelectedTask] = React.useState<any>(null);
+  const [aiTask, setAiTask] = React.useState<any>(null);
   const [isSignatureModalOpen, setIsSignatureModalOpen] = React.useState(false);
+  const [isAiModalOpen, setIsAiModalOpen] = React.useState(false);
 
   const handleAction = (taskTitle: string, action: string) => {
     toast.success(`${action}: ${taskTitle}`, {
       description: "سيتم تحديث إدارة الصيانة فوراً.",
     });
+  };
+
+  const handleAiAssistant = (task: any) => {
+    setAiTask(task);
+    setIsAiModalOpen(true);
   };
 
   const handleComplete = (task: any) => {
@@ -148,6 +157,14 @@ function TechnicianDashboard() {
                     </Button>
                     <Button
                       variant="outline"
+                      className="rounded-xl h-12 w-12 p-0 border-primary/20 bg-primary/5 hover:bg-primary/10"
+                      onClick={() => handleAiAssistant(task)}
+                      title="مساعد الذكاء الاصطناعي"
+                    >
+                      <BrainCircuit className="h-5 w-5 text-primary" />
+                    </Button>
+                    <Button
+                      variant="outline"
                       className="rounded-xl h-12 w-12 p-0 border-primary/20"
                       onClick={() => handleAction(task.title, "طلب فتح كاميرا الجوال")}
                     >
@@ -167,6 +184,15 @@ function TechnicianDashboard() {
           onOpenChange={setIsSignatureModalOpen}
           onConfirm={onSignatureConfirm}
           title={selectedTask.title}
+        />
+      )}
+
+      {aiTask && (
+        <AiAssistantModal
+          isOpen={isAiModalOpen}
+          onOpenChange={setIsAiModalOpen}
+          problemDescription={aiTask.title}
+          orderTitle={aiTask.title}
         />
       )}
     </PortalLayout>

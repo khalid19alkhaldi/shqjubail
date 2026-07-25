@@ -46,6 +46,8 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { getOrders, updateOrderStatus, deleteOrder } from "@/lib/data-service";
+import { BrainCircuit } from "lucide-react";
+import { getAiSummary } from "@/lib/ai-service";
 
 export const Route = createFileRoute("/employee/orders")({
   beforeLoad: () => {
@@ -169,8 +171,21 @@ function EmployeeOrders() {
                   <TableRow key={order.id} className="hover:bg-secondary/20 transition-colors">
                     <TableCell className="font-bold">{order.id}</TableCell>
                     <TableCell>
-                      <div className="font-medium">{order.title}</div>
-                      <div className="text-xs text-muted-foreground">{order.category}</div>
+                      <div className="font-medium flex items-center gap-2">
+                        {order.title}
+                        {order.desc && (
+                          <BrainCircuit className="h-3 w-3 text-primary animate-pulse" title="يحتوي على تحليل ذكاء اصطناعي" />
+                        )}
+                      </div>
+                      <div className="text-[10px] text-muted-foreground flex items-center gap-1">
+                        {order.category}
+                        {order.desc && (
+                          <>
+                            <span className="mx-1">•</span>
+                            <span className="text-primary italic">{getAiSummary(order.desc)}</span>
+                          </>
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell>{order.building}</TableCell>
                     <TableCell>
