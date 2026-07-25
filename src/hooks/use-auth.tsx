@@ -10,7 +10,7 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (username: string, role: UserRole, name: string) => void;
+  login: (username: string, role: UserRole, name: string) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -23,26 +23,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Load user from localStorage on mount
-    const savedUser = localStorage.getItem("shq_user");
-    if (savedUser) {
-      try {
+    try {
+      const savedUser = localStorage.getItem("shq_user");
+      if (savedUser) {
         setUser(JSON.parse(savedUser));
-      } catch (e) {
-        localStorage.removeItem("shq_user");
       }
+    } catch (e) {
+      console.error("Error parsing user from localStorage", e);
+      localStorage.removeItem("shq_user");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
-  const login = (username: string, role: UserRole, name: string) => {
+  const login = async (username: string, role: UserRole, name: string) => {
     const newUser = { username, role, name };
     setUser(newUser);
-    localStorage.setItem("shq_user", JSON.stringify(newUser));
+    try {
+      localStorage.setItem("shq_user", JSON.stringify(newUser));
+      // Give the WebView a moment to settle storage
+      await new Promise(resolve => setTimeout(resolve, 50));
+    } catch (e) {
+      console.error("Error saving user to localStorage", e);
+    }
   };
 
   const logout = () => {
-    setUser(null);
-    localStorage.removeItem("shq_user");
+    try {
+      setUser(null);
+      localStorage.removeItem("shq_user");
+    } catch (e) {
+      console.error("Error removing user from localStorage", e);
+    }
   };
 
   if (loading) return null;

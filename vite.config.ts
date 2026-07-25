@@ -16,8 +16,25 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
+    dedupe: [
+      'react',
+      'react-dom',
+      '@tanstack/react-router',
+      '@tanstack/react-query'
+    ]
+  },
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'lucide-react',
+      '@tanstack/react-router',
+      '@tanstack/react-query'
+    ]
   },
   build: {
     outDir: 'dist',
+    sourcemap: false,
+    minify: 'esbuild'
   }
 })

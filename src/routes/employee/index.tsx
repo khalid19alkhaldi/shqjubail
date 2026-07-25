@@ -56,11 +56,16 @@ function EmployeeDashboard() {
 
   React.useEffect(() => {
     const fetchData = async () => {
-      const fetchedOrders = await getOrders();
-      setOrders(fetchedOrders.slice(0, 3));
-
-      const stats = await getDashboardStats();
-      setStatsData(stats);
+      try {
+        const [fetchedOrders, stats] = await Promise.all([
+          getOrders(),
+          getDashboardStats()
+        ]);
+        setOrders(fetchedOrders.slice(0, 3));
+        setStatsData(stats);
+      } catch (err) {
+        console.error("Dashboard data fetch failed", err);
+      }
     };
     fetchData();
   }, []);

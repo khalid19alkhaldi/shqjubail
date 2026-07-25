@@ -3,21 +3,33 @@ import { MOCK_ORDERS, PREVENTIVE_TASKS, MOCK_BUILDINGS, MOCK_NOTIFICATIONS } fro
 
 const isClient = typeof window !== "undefined";
 
+// Helper for timeout to prevent infinite hangs
+const withTimeout = <T>(promise: Promise<T>, timeoutMs = 8000): Promise<T> => {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error("Request timed out")), timeoutMs)
+    ),
+  ]);
+};
+
 // Notifications
 export const getNotifications = async (role: string) => {
   if (!isClient) return MOCK_NOTIFICATIONS.filter((n: any) => n.role === role);
   try {
-    const { data, error } = await supabase
-      .from('notifications')
-      .select('*')
-      .eq('role', role)
-      .order('created_at', { ascending: false });
+    const { data, error } = await withTimeout(
+      supabase
+        .from('notifications')
+        .select('*')
+        .eq('role', role)
+        .order('created_at', { ascending: false })
+    );
 
     if (error) throw error;
     return data || [];
   } catch (error) {
     console.error("Error fetching notifications:", error);
-    return MOCK_NOTIFICATIONS.filter((n: any) => n.role === role);
+    return [];
   }
 };
 
@@ -39,16 +51,18 @@ export const markNotificationsAsRead = async (role: string) => {
 export const getOrders = async () => {
   if (!isClient) return MOCK_ORDERS;
   try {
-    const { data, error } = await supabase
-      .from('orders')
-      .select('*')
-      .order('created_at', { ascending: false });
+    const { data, error } = await withTimeout(
+      supabase
+        .from('orders')
+        .select('*')
+        .order('created_at', { ascending: false })
+    );
 
     if (error) throw error;
     return data || [];
   } catch (error) {
     console.error("Error fetching orders:", error);
-    return MOCK_ORDERS;
+    return [];
   }
 };
 
@@ -62,10 +76,7 @@ export const saveOrder = async (newOrder: any) => {
     if (error) throw error;
   } catch (error) {
     console.error("Error saving order:", error);
-    // Fallback to local storage
-    const saved = localStorage.getItem("shq_orders");
-    const orders = saved ? JSON.parse(saved) : MOCK_ORDERS;
-    localStorage.setItem("shq_orders", JSON.stringify([newOrder, ...orders]));
+    throw error;
   }
 };
 
@@ -80,11 +91,6 @@ export const deleteOrder = async (orderId: string) => {
     if (error) throw error;
   } catch (error) {
     console.error("Error deleting order:", error);
-    const saved = localStorage.getItem("shq_orders");
-    if (saved) {
-      const orders = JSON.parse(saved);
-      localStorage.setItem("shq_orders", JSON.stringify(orders.filter((o: any) => o.id !== orderId)));
-    }
   }
 };
 
@@ -99,27 +105,24 @@ export const updateOrderStatus = async (orderId: string, status: string, extraDa
     if (error) throw error;
   } catch (error) {
     console.error("Error updating order status:", error);
-    const saved = localStorage.getItem("shq_orders");
-    if (saved) {
-      const orders = JSON.parse(saved);
-      const updated = orders.map((o: any) => o.id === orderId ? { ...o, status, ...extraData } : o);
-      localStorage.setItem("shq_orders", JSON.stringify(updated));
-    }
   }
 };
 
-// Statistics
+// Statistics (Parallelized)
 export const getDashboardStats = async () => {
   try {
-    const orders = await getOrders();
-    const buildings = await getBuildings();
+    const [ordersResult, buildingsResult] = await Promise.all([
+      getOrders(),
+      getBuildings()
+    ]);
 
-    const active = orders.filter((o: any) => o.status !== "مكتمل" && o.status !== "مرفوض من المقاول").length;
-    const completed = orders.filter((o: any) => o.status === "مكتمل").length;
-    const pendingApproval = orders.filter((o: any) => o.status === "تم تقديم عرض مالي").length;
+    const active = ordersResult.filter((o: any) => o.status !== "مكتمل" && o.status !== "مرفوض من المقاول").length;
+    const completed = ordersResult.filter((o: any) => o.status === "مكتمل").length;
+    const pendingApproval = ordersResult.filter((o: any) => o.status === "تم تقديم عرض مالي").length;
 
-    return { active, completed, pendingApproval, buildings: buildings.length };
+    return { active, completed, pendingApproval, buildings: buildingsResult.length };
   } catch (error) {
+    console.error("Error fetching stats:", error);
     return { active: 0, completed: 0, pendingApproval: 0, buildings: 0 };
   }
 };
@@ -128,16 +131,18 @@ export const getDashboardStats = async () => {
 export const getPreventiveTasks = async () => {
   if (!isClient) return PREVENTIVE_TASKS;
   try {
-    const { data, error } = await supabase
-      .from('preventive_tasks')
-      .select('*')
-      .order('next_date', { ascending: true });
+    const { data, error } = await withTimeout(
+      supabase
+        .from('preventive_tasks')
+        .select('*')
+        .order('next_date', { ascending: true })
+    );
 
     if (error) throw error;
     return data || [];
   } catch (error) {
     console.error("Error fetching preventive tasks:", error);
-    return PREVENTIVE_TASKS;
+    return [];
   }
 };
 
@@ -151,6 +156,7 @@ export const savePreventiveTask = async (newTask: any) => {
     if (error) throw error;
   } catch (error) {
     console.error("Error saving preventive task:", error);
+    throw error;
   }
 };
 
@@ -178,16 +184,22 @@ export const approvePreventiveTask = async (taskId: string) => {
 export const getBuildings = async () => {
   if (!isClient) return MOCK_BUILDINGS;
   try {
-    const { data, error } = await supabase
-      .from('buildings')
-      .select('*')
-      .order('name', { ascending: true });
+    const { data, error } = await withTimeout(
+      supabase
+        .from('buildings')
+        .select('*')
+        .order('created_at', { ascending: false })
+    );
 
     if (error) throw error;
-    return data || [];
+
+    return (data || []).map((b: any) => ({
+      ...b,
+      activeOrders: b.active_orders // Compatibility bridge
+    }));
   } catch (error) {
     console.error("Error fetching buildings:", error);
-    return MOCK_BUILDINGS;
+    return [];
   }
 };
 
@@ -201,5 +213,6 @@ export const addBuilding = async (newBuilding: any) => {
     if (error) throw error;
   } catch (error) {
     console.error("Error adding building:", error);
+    throw error;
   }
 };
