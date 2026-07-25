@@ -15,7 +15,7 @@ const withTimeout = <T>(promise: Promise<T>, timeoutMs = 5000): Promise<T> => {
 
 // Notifications
 export const getNotifications = async (role: string) => {
-  if (!isClient) return [];
+  if (!isClient) return MOCK_NOTIFICATIONS.filter((n: any) => n.role === role);
   try {
     const { data, error } = await withTimeout(
       supabase
@@ -103,14 +103,18 @@ export const updateOrderStatus = async (orderId: string, status: string, extraDa
 
 // Statistics
 export const getDashboardStats = async () => {
-  const orders = await getOrders();
-  const buildings = await getBuildings();
+  try {
+    const orders = await getOrders();
+    const buildings = await getBuildings();
 
-  const active = orders.filter((o: any) => o.status !== "مكتمل" && o.status !== "مرفوض من المقاول").length;
-  const completed = orders.filter((o: any) => o.status === "مكتمل").length;
-  const pendingApproval = orders.filter((o: any) => o.status === "تم تقديم عرض مالي").length;
+    const active = orders.filter((o: any) => o.status !== "مكتمل" && o.status !== "مرفوض من المقاول").length;
+    const completed = orders.filter((o: any) => o.status === "مكتمل").length;
+    const pendingApproval = orders.filter((o: any) => o.status === "تم تقديم عرض مالي").length;
 
-  return { active, completed, pendingApproval, buildings: buildings.length };
+    return { active, completed, pendingApproval, buildings: buildings.length };
+  } catch (error) {
+    return { active: 0, completed: 0, pendingApproval: 0, buildings: 0 };
+  }
 };
 
 // Preventive Tasks
@@ -124,6 +128,31 @@ export const getPreventiveTasks = async () => {
     return data;
   } catch (error) {
     return PREVENTIVE_TASKS;
+  }
+};
+
+export const savePreventiveTask = async (newTask: any) => {
+  if (!isClient) return;
+  try {
+    const { error } = await supabase.from('preventive_tasks').insert([newTask]);
+    if (error) throw error;
+  } catch (error) {
+    console.error("Error saving preventive task:", error);
+  }
+};
+
+export const approvePreventiveTask = async (taskId: string) => {
+  if (!isClient) return;
+  try {
+    const nextDate = new Date();
+    nextDate.setMonth(nextDate.getMonth() + 3);
+
+    await supabase.from('preventive_tasks').update({
+      status: "تم التعميد",
+      next_date: nextDate.toISOString().split('T')[0]
+    }).eq('id', taskId);
+  } catch (error) {
+    console.error("Error approving preventive task:", error);
   }
 };
 

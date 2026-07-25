@@ -159,31 +159,33 @@ export function PortalLayout({ children, title, items }: PortalLayoutProps) {
                     )}
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-80 p-0 rounded-2xl shadow-elegant" dir="rtl">
-                  <DropdownMenuLabel className="p-4 flex items-center justify-between">
-                    <span className="font-bold text-primary-deep">التنبيهات</span>
-                    {unreadCount > 0 && <Badge className="bg-red-100 text-red-600 border-none">{unreadCount} جديد</Badge>}
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <div className="max-h-[350px] overflow-y-auto">
-                    {notifications.map((n) => (
-                      <DropdownMenuItem key={n.id} className="p-4 flex flex-col items-start gap-1 cursor-default focus:bg-secondary/20">
-                        <div className="flex items-center justify-between w-full">
-                          <span className="font-bold text-sm">{n.title}</span>
-                          <span className="text-[10px] text-muted-foreground">{n.time}</span>
-                        </div>
-                        <p className="text-xs text-muted-foreground text-right">{n.desc}</p>
-                        {n.unread && <div className="h-1.5 w-1.5 rounded-full bg-primary mt-1" />}
-                      </DropdownMenuItem>
-                    ))}
-                    {notifications.length === 0 && (
-                      <div className="p-10 text-center text-muted-foreground text-sm">لا توجد تنبيهات حالياً.</div>
-                    )}
+                <DropdownMenuContent align="end" className="w-80 p-0 rounded-2xl shadow-elegant">
+                  <div dir="rtl">
+                    <DropdownMenuLabel className="p-4 flex items-center justify-between">
+                      <span className="font-bold text-primary-deep">التنبيهات</span>
+                      {unreadCount > 0 && <Badge className="bg-red-100 text-red-600 border-none">{unreadCount} جديد</Badge>}
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <div className="max-h-[350px] overflow-y-auto">
+                      {notifications.map((n) => (
+                        <DropdownMenuItem key={n.id} className="p-4 flex flex-col items-start gap-1 cursor-default focus:bg-secondary/20">
+                          <div className="flex items-center justify-between w-full">
+                            <span className="font-bold text-sm">{n.title}</span>
+                            <span className="text-[10px] text-muted-foreground">{n.time}</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground text-right">{n.desc}</p>
+                          {n.unread && <div className="h-1.5 w-1.5 rounded-full bg-primary mt-1" />}
+                        </DropdownMenuItem>
+                      ))}
+                      {notifications.length === 0 && (
+                        <div className="p-10 text-center text-muted-foreground text-sm">لا توجد تنبيهات حالياً.</div>
+                      )}
+                    </div>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="p-3 text-center justify-center text-xs font-bold text-primary cursor-pointer hover:bg-primary/5">
+                      عرض كافة التنبيهات
+                    </DropdownMenuItem>
                   </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="p-3 text-center justify-center text-xs font-bold text-primary cursor-pointer hover:bg-primary/5">
-                    عرض كافة التنبيهات
-                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
               <div className="h-8 w-px bg-border mx-2" />
