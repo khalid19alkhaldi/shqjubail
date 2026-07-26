@@ -147,14 +147,6 @@ function RootComponent() {
 function AuthWrapper() {
   const auth = useAuth();
 
-  return (
-    <Outlet
-      context={{
-        auth: {
-          user: auth.user,
-          isAuthenticated: auth.isAuthenticated
-        }
-      }}
-    />
-  );
+  void auth;
+  return <Outlet />;
 }
