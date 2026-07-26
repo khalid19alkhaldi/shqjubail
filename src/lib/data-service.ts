@@ -4,9 +4,9 @@ import { MOCK_ORDERS, PREVENTIVE_TASKS, MOCK_BUILDINGS, MOCK_NOTIFICATIONS } fro
 const isClient = typeof window !== "undefined";
 
 // Helper for timeout to prevent infinite hangs
-const withTimeout = <T>(promise: Promise<T>, timeoutMs = 5000): Promise<T> => {
+const withTimeout = <T>(promise: PromiseLike<T>, timeoutMs = 5000): Promise<T> => {
   return Promise.race([
-    promise,
+    Promise.resolve(promise),
     new Promise<T>((_, reject) =>
       setTimeout(() => reject(new Error("Request timed out")), timeoutMs)
     ),
@@ -17,7 +17,7 @@ const withTimeout = <T>(promise: Promise<T>, timeoutMs = 5000): Promise<T> => {
 export const getNotifications = async (role: string) => {
   if (!isClient) return MOCK_NOTIFICATIONS.filter((n: any) => n.role === role);
   try {
-    const { data, error } = await withTimeout(
+    const { data, error } = await withTimeout<any>(
       supabase
         .from('notifications')
         .select('*')
@@ -48,7 +48,7 @@ export const markNotificationsAsRead = async (role: string) => {
 export const getOrders = async () => {
   if (!isClient) return MOCK_ORDERS;
   try {
-    const { data, error } = await withTimeout(
+    const { data, error } = await withTimeout<any>(
       supabase
         .from('orders')
         .select('*')
@@ -121,7 +121,7 @@ export const getDashboardStats = async () => {
 export const getPreventiveTasks = async () => {
   if (!isClient) return PREVENTIVE_TASKS;
   try {
-    const { data, error } = await withTimeout(
+    const { data, error } = await withTimeout<any>(
       supabase.from('preventive_tasks').select('*').order('next_date', { ascending: true })
     );
     if (error || !data || data.length === 0) return PREVENTIVE_TASKS;
@@ -160,7 +160,7 @@ export const approvePreventiveTask = async (taskId: string) => {
 export const getBuildings = async () => {
   if (!isClient) return MOCK_BUILDINGS;
   try {
-    const { data, error } = await withTimeout(
+    const { data, error } = await withTimeout<any>(
       supabase.from('buildings').select('*').order('name', { ascending: true })
     );
     if (error || !data || data.length === 0) return MOCK_BUILDINGS;

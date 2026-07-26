@@ -136,7 +136,7 @@ function EmployeeOrders() {
                   الأولوية: {filterPriority === "all" ? "الكل" : filterPriority}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" dir="rtl">
+              <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => setFilterPriority("all")}>الكل</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setFilterPriority("عالية")}>عالية</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setFilterPriority("متوسطة")}>متوسطة</DropdownMenuItem>
@@ -174,7 +174,9 @@ function EmployeeOrders() {
                       <div className="font-medium flex items-center gap-2">
                         {order.title}
                         {order.desc && (
-                          <BrainCircuit className="h-3 w-3 text-primary animate-pulse" title="يحتوي على تحليل ذكاء اصطناعي" />
+                          <BrainCircuit className="h-3 w-3 text-primary animate-pulse">
+                            <title>يحتوي على تحليل ذكاء اصطناعي</title>
+                          </BrainCircuit>
                         )}
                       </div>
                       <div className="text-[10px] text-muted-foreground flex items-center gap-1">
@@ -245,7 +247,7 @@ function EmployeeOrders() {
                                 <MoreVertical className="h-4 w-4" />
                               </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" dir="rtl">
+                            <DropdownMenuContent align="end">
                               <DropdownMenuLabel className="text-right">الإجراءات</DropdownMenuLabel>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem className="text-right gap-2 cursor-pointer" onClick={() => setSelectedOrder(order)}>

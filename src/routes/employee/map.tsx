@@ -6,6 +6,7 @@ import React from "react";
 import { getBuildings } from "@/lib/data-service";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/employee/map")({
   beforeLoad: () => {
@@ -34,7 +35,7 @@ function EmployeeMap() {
   const [selectedBuilding, setSelectedBuilding] = React.useState<any>(null);
 
   React.useEffect(() => {
-    setBuildings(getBuildings());
+    (async () => setBuildings(await getBuildings()))();
   }, []);
 
   return (
