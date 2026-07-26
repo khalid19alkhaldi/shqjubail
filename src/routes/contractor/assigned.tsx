@@ -48,8 +48,8 @@ function ContractorAssigned() {
   const [isSignatureModalOpen, setIsSignatureModalOpen] = React.useState(false);
   const [orders, setOrders] = React.useState<any[]>([]);
 
-  const refreshOrders = () => {
-    setOrders(getOrders());
+  const refreshOrders = async () => {
+    setOrders(await getOrders());
   };
 
   React.useEffect(() => {
