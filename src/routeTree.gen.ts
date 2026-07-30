@@ -13,7 +13,9 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as TechnicianIndexRouteImport } from './routes/technician/index'
 import { Route as EmployeeIndexRouteImport } from './routes/employee/index'
 import { Route as ContractorIndexRouteImport } from './routes/contractor/index'
+import { Route as TechnicianStatusRouteImport } from './routes/technician/status'
 import { Route as TechnicianLoginRouteImport } from './routes/technician/login'
+import { Route as TechnicianHistoryRouteImport } from './routes/technician/history'
 import { Route as EmployeeReportsRouteImport } from './routes/employee/reports'
 import { Route as EmployeePreventiveRouteImport } from './routes/employee/preventive'
 import { Route as EmployeeOrdersRouteImport } from './routes/employee/orders'
@@ -45,9 +47,19 @@ const ContractorIndexRoute = ContractorIndexRouteImport.update({
   path: '/contractor/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TechnicianStatusRoute = TechnicianStatusRouteImport.update({
+  id: '/technician/status',
+  path: '/technician/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TechnicianLoginRoute = TechnicianLoginRouteImport.update({
   id: '/technician/login',
   path: '/technician/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TechnicianHistoryRoute = TechnicianHistoryRouteImport.update({
+  id: '/technician/history',
+  path: '/technician/history',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EmployeeReportsRoute = EmployeeReportsRouteImport.update({
@@ -113,7 +125,9 @@ export interface FileRoutesByFullPath {
   '/employee/orders': typeof EmployeeOrdersRoute
   '/employee/preventive': typeof EmployeePreventiveRoute
   '/employee/reports': typeof EmployeeReportsRoute
+  '/technician/history': typeof TechnicianHistoryRoute
   '/technician/login': typeof TechnicianLoginRoute
+  '/technician/status': typeof TechnicianStatusRoute
   '/contractor/': typeof ContractorIndexRoute
   '/employee/': typeof EmployeeIndexRoute
   '/technician/': typeof TechnicianIndexRoute
@@ -130,7 +144,9 @@ export interface FileRoutesByTo {
   '/employee/orders': typeof EmployeeOrdersRoute
   '/employee/preventive': typeof EmployeePreventiveRoute
   '/employee/reports': typeof EmployeeReportsRoute
+  '/technician/history': typeof TechnicianHistoryRoute
   '/technician/login': typeof TechnicianLoginRoute
+  '/technician/status': typeof TechnicianStatusRoute
   '/contractor': typeof ContractorIndexRoute
   '/employee': typeof EmployeeIndexRoute
   '/technician': typeof TechnicianIndexRoute
@@ -148,7 +164,9 @@ export interface FileRoutesById {
   '/employee/orders': typeof EmployeeOrdersRoute
   '/employee/preventive': typeof EmployeePreventiveRoute
   '/employee/reports': typeof EmployeeReportsRoute
+  '/technician/history': typeof TechnicianHistoryRoute
   '/technician/login': typeof TechnicianLoginRoute
+  '/technician/status': typeof TechnicianStatusRoute
   '/contractor/': typeof ContractorIndexRoute
   '/employee/': typeof EmployeeIndexRoute
   '/technician/': typeof TechnicianIndexRoute
@@ -167,7 +185,9 @@ export interface FileRouteTypes {
     | '/employee/orders'
     | '/employee/preventive'
     | '/employee/reports'
+    | '/technician/history'
     | '/technician/login'
+    | '/technician/status'
     | '/contractor/'
     | '/employee/'
     | '/technician/'
@@ -184,7 +204,9 @@ export interface FileRouteTypes {
     | '/employee/orders'
     | '/employee/preventive'
     | '/employee/reports'
+    | '/technician/history'
     | '/technician/login'
+    | '/technician/status'
     | '/contractor'
     | '/employee'
     | '/technician'
@@ -201,7 +223,9 @@ export interface FileRouteTypes {
     | '/employee/orders'
     | '/employee/preventive'
     | '/employee/reports'
+    | '/technician/history'
     | '/technician/login'
+    | '/technician/status'
     | '/contractor/'
     | '/employee/'
     | '/technician/'
@@ -219,7 +243,9 @@ export interface RootRouteChildren {
   EmployeeOrdersRoute: typeof EmployeeOrdersRoute
   EmployeePreventiveRoute: typeof EmployeePreventiveRoute
   EmployeeReportsRoute: typeof EmployeeReportsRoute
+  TechnicianHistoryRoute: typeof TechnicianHistoryRoute
   TechnicianLoginRoute: typeof TechnicianLoginRoute
+  TechnicianStatusRoute: typeof TechnicianStatusRoute
   ContractorIndexRoute: typeof ContractorIndexRoute
   EmployeeIndexRoute: typeof EmployeeIndexRoute
   TechnicianIndexRoute: typeof TechnicianIndexRoute
@@ -255,11 +281,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContractorIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/technician/status': {
+      id: '/technician/status'
+      path: '/technician/status'
+      fullPath: '/technician/status'
+      preLoaderRoute: typeof TechnicianStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/technician/login': {
       id: '/technician/login'
       path: '/technician/login'
       fullPath: '/technician/login'
       preLoaderRoute: typeof TechnicianLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/technician/history': {
+      id: '/technician/history'
+      path: '/technician/history'
+      fullPath: '/technician/history'
+      preLoaderRoute: typeof TechnicianHistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/employee/reports': {
@@ -347,7 +387,9 @@ const rootRouteChildren: RootRouteChildren = {
   EmployeeOrdersRoute: EmployeeOrdersRoute,
   EmployeePreventiveRoute: EmployeePreventiveRoute,
   EmployeeReportsRoute: EmployeeReportsRoute,
+  TechnicianHistoryRoute: TechnicianHistoryRoute,
   TechnicianLoginRoute: TechnicianLoginRoute,
+  TechnicianStatusRoute: TechnicianStatusRoute,
   ContractorIndexRoute: ContractorIndexRoute,
   EmployeeIndexRoute: EmployeeIndexRoute,
   TechnicianIndexRoute: TechnicianIndexRoute,

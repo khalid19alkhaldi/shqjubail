@@ -75,20 +75,31 @@ export function PortalLayout({ children, title, items }: PortalLayoutProps) {
   return (
     <div className="min-h-screen bg-secondary/30 flex flex-col" dir="rtl">
       {/* Mobile Header */}
-      <header className="lg:hidden bg-primary-deep text-primary-foreground p-4 flex items-center justify-between sticky top-0 z-50">
-        <div className="flex items-center gap-2">
-          <img src={logo} alt="Logo" className="h-8 w-8 rounded-full" />
-          <span className="font-bold text-sm">صيانة الجمعية</span>
+      <header className="lg:hidden bg-primary-deep text-primary-foreground px-4 py-3 flex items-center justify-between gap-3 sticky top-0 z-50">
+        <div className="flex items-center gap-2 min-w-0">
+          <img src={logo} alt="Logo" className="h-8 w-8 rounded-full shrink-0" />
+          <div className="min-w-0">
+            <div className="font-bold text-sm leading-tight truncate">صيانة الجمعية</div>
+            <div className="text-[10px] opacity-70 truncate">{title}</div>
+          </div>
         </div>
-        <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-          {isSidebarOpen ? <X /> : <Menu />}
-        </Button>
+        <div className="flex items-center gap-1 shrink-0">
+          <Button variant="ghost" size="icon" className="relative" onClick={handleMarkAllRead}>
+            <Bell className="h-5 w-5" />
+            {unreadCount > 0 && (
+              <span className="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full border-2 border-primary-deep" />
+            )}
+          </Button>
+          <Button variant="ghost" size="icon" aria-label="القائمة" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+            {isSidebarOpen ? <X /> : <Menu />}
+          </Button>
+        </div>
       </header>
 
       <div className="flex flex-1 relative">
         {/* Sidebar */}
         <aside className={`
-          fixed inset-y-0 right-0 z-40 w-64 bg-primary-deep text-primary-foreground transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static
+          fixed inset-y-0 right-0 z-40 w-[80vw] max-w-[280px] lg:w-64 bg-primary-deep text-primary-foreground transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static overflow-y-auto
           ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}
         `}>
           <div className="flex flex-col h-full">
@@ -198,7 +209,7 @@ export function PortalLayout({ children, title, items }: PortalLayoutProps) {
             </div>
           </header>
 
-          <div className="p-4 lg:p-8 flex-1">
+          <div className="p-3 sm:p-5 lg:p-8 flex-1 w-full max-w-[1400px] mx-auto overflow-x-hidden">
             {children}
           </div>
         </main>
