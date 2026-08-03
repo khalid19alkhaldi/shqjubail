@@ -16,11 +16,13 @@ import { Route as ContractorIndexRouteImport } from './routes/contractor/index'
 import { Route as TechnicianStatusRouteImport } from './routes/technician/status'
 import { Route as TechnicianLoginRouteImport } from './routes/technician/login'
 import { Route as TechnicianHistoryRouteImport } from './routes/technician/history'
+import { Route as EmployeeVendorsRouteImport } from './routes/employee/vendors'
 import { Route as EmployeeReportsRouteImport } from './routes/employee/reports'
 import { Route as EmployeePreventiveRouteImport } from './routes/employee/preventive'
 import { Route as EmployeeOrdersRouteImport } from './routes/employee/orders'
 import { Route as EmployeeMapRouteImport } from './routes/employee/map'
 import { Route as EmployeeLoginRouteImport } from './routes/employee/login'
+import { Route as EmployeeInventoryRouteImport } from './routes/employee/inventory'
 import { Route as EmployeeBuildingsRouteImport } from './routes/employee/buildings'
 import { Route as ContractorLoginRouteImport } from './routes/contractor/login'
 import { Route as ContractorInvoicesRouteImport } from './routes/contractor/invoices'
@@ -62,6 +64,11 @@ const TechnicianHistoryRoute = TechnicianHistoryRouteImport.update({
   path: '/technician/history',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EmployeeVendorsRoute = EmployeeVendorsRouteImport.update({
+  id: '/employee/vendors',
+  path: '/employee/vendors',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EmployeeReportsRoute = EmployeeReportsRouteImport.update({
   id: '/employee/reports',
   path: '/employee/reports',
@@ -85,6 +92,11 @@ const EmployeeMapRoute = EmployeeMapRouteImport.update({
 const EmployeeLoginRoute = EmployeeLoginRouteImport.update({
   id: '/employee/login',
   path: '/employee/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmployeeInventoryRoute = EmployeeInventoryRouteImport.update({
+  id: '/employee/inventory',
+  path: '/employee/inventory',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EmployeeBuildingsRoute = EmployeeBuildingsRouteImport.update({
@@ -120,11 +132,13 @@ export interface FileRoutesByFullPath {
   '/contractor/invoices': typeof ContractorInvoicesRoute
   '/contractor/login': typeof ContractorLoginRoute
   '/employee/buildings': typeof EmployeeBuildingsRoute
+  '/employee/inventory': typeof EmployeeInventoryRoute
   '/employee/login': typeof EmployeeLoginRoute
   '/employee/map': typeof EmployeeMapRoute
   '/employee/orders': typeof EmployeeOrdersRoute
   '/employee/preventive': typeof EmployeePreventiveRoute
   '/employee/reports': typeof EmployeeReportsRoute
+  '/employee/vendors': typeof EmployeeVendorsRoute
   '/technician/history': typeof TechnicianHistoryRoute
   '/technician/login': typeof TechnicianLoginRoute
   '/technician/status': typeof TechnicianStatusRoute
@@ -139,11 +153,13 @@ export interface FileRoutesByTo {
   '/contractor/invoices': typeof ContractorInvoicesRoute
   '/contractor/login': typeof ContractorLoginRoute
   '/employee/buildings': typeof EmployeeBuildingsRoute
+  '/employee/inventory': typeof EmployeeInventoryRoute
   '/employee/login': typeof EmployeeLoginRoute
   '/employee/map': typeof EmployeeMapRoute
   '/employee/orders': typeof EmployeeOrdersRoute
   '/employee/preventive': typeof EmployeePreventiveRoute
   '/employee/reports': typeof EmployeeReportsRoute
+  '/employee/vendors': typeof EmployeeVendorsRoute
   '/technician/history': typeof TechnicianHistoryRoute
   '/technician/login': typeof TechnicianLoginRoute
   '/technician/status': typeof TechnicianStatusRoute
@@ -159,11 +175,13 @@ export interface FileRoutesById {
   '/contractor/invoices': typeof ContractorInvoicesRoute
   '/contractor/login': typeof ContractorLoginRoute
   '/employee/buildings': typeof EmployeeBuildingsRoute
+  '/employee/inventory': typeof EmployeeInventoryRoute
   '/employee/login': typeof EmployeeLoginRoute
   '/employee/map': typeof EmployeeMapRoute
   '/employee/orders': typeof EmployeeOrdersRoute
   '/employee/preventive': typeof EmployeePreventiveRoute
   '/employee/reports': typeof EmployeeReportsRoute
+  '/employee/vendors': typeof EmployeeVendorsRoute
   '/technician/history': typeof TechnicianHistoryRoute
   '/technician/login': typeof TechnicianLoginRoute
   '/technician/status': typeof TechnicianStatusRoute
@@ -180,11 +198,13 @@ export interface FileRouteTypes {
     | '/contractor/invoices'
     | '/contractor/login'
     | '/employee/buildings'
+    | '/employee/inventory'
     | '/employee/login'
     | '/employee/map'
     | '/employee/orders'
     | '/employee/preventive'
     | '/employee/reports'
+    | '/employee/vendors'
     | '/technician/history'
     | '/technician/login'
     | '/technician/status'
@@ -199,11 +219,13 @@ export interface FileRouteTypes {
     | '/contractor/invoices'
     | '/contractor/login'
     | '/employee/buildings'
+    | '/employee/inventory'
     | '/employee/login'
     | '/employee/map'
     | '/employee/orders'
     | '/employee/preventive'
     | '/employee/reports'
+    | '/employee/vendors'
     | '/technician/history'
     | '/technician/login'
     | '/technician/status'
@@ -218,11 +240,13 @@ export interface FileRouteTypes {
     | '/contractor/invoices'
     | '/contractor/login'
     | '/employee/buildings'
+    | '/employee/inventory'
     | '/employee/login'
     | '/employee/map'
     | '/employee/orders'
     | '/employee/preventive'
     | '/employee/reports'
+    | '/employee/vendors'
     | '/technician/history'
     | '/technician/login'
     | '/technician/status'
@@ -238,11 +262,13 @@ export interface RootRouteChildren {
   ContractorInvoicesRoute: typeof ContractorInvoicesRoute
   ContractorLoginRoute: typeof ContractorLoginRoute
   EmployeeBuildingsRoute: typeof EmployeeBuildingsRoute
+  EmployeeInventoryRoute: typeof EmployeeInventoryRoute
   EmployeeLoginRoute: typeof EmployeeLoginRoute
   EmployeeMapRoute: typeof EmployeeMapRoute
   EmployeeOrdersRoute: typeof EmployeeOrdersRoute
   EmployeePreventiveRoute: typeof EmployeePreventiveRoute
   EmployeeReportsRoute: typeof EmployeeReportsRoute
+  EmployeeVendorsRoute: typeof EmployeeVendorsRoute
   TechnicianHistoryRoute: typeof TechnicianHistoryRoute
   TechnicianLoginRoute: typeof TechnicianLoginRoute
   TechnicianStatusRoute: typeof TechnicianStatusRoute
@@ -302,6 +328,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TechnicianHistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/employee/vendors': {
+      id: '/employee/vendors'
+      path: '/employee/vendors'
+      fullPath: '/employee/vendors'
+      preLoaderRoute: typeof EmployeeVendorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/employee/reports': {
       id: '/employee/reports'
       path: '/employee/reports'
@@ -335,6 +368,13 @@ declare module '@tanstack/react-router' {
       path: '/employee/login'
       fullPath: '/employee/login'
       preLoaderRoute: typeof EmployeeLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/employee/inventory': {
+      id: '/employee/inventory'
+      path: '/employee/inventory'
+      fullPath: '/employee/inventory'
+      preLoaderRoute: typeof EmployeeInventoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/employee/buildings': {
@@ -382,11 +422,13 @@ const rootRouteChildren: RootRouteChildren = {
   ContractorInvoicesRoute: ContractorInvoicesRoute,
   ContractorLoginRoute: ContractorLoginRoute,
   EmployeeBuildingsRoute: EmployeeBuildingsRoute,
+  EmployeeInventoryRoute: EmployeeInventoryRoute,
   EmployeeLoginRoute: EmployeeLoginRoute,
   EmployeeMapRoute: EmployeeMapRoute,
   EmployeeOrdersRoute: EmployeeOrdersRoute,
   EmployeePreventiveRoute: EmployeePreventiveRoute,
   EmployeeReportsRoute: EmployeeReportsRoute,
+  EmployeeVendorsRoute: EmployeeVendorsRoute,
   TechnicianHistoryRoute: TechnicianHistoryRoute,
   TechnicianLoginRoute: TechnicianLoginRoute,
   TechnicianStatusRoute: TechnicianStatusRoute,
