@@ -1,5 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { PortalLayout } from "@/components/PortalLayout";
+import { employeeSidebarItems } from "@/lib/employee-nav";
 import { LayoutDashboard, ClipboardList, Wrench, Building2, BarChart3, Map as MapIcon, MapPin, AlertCircle, CheckCircle2 } from "lucide-react";
 import { Map, Marker, Overlay } from "pigeon-maps";
 import React from "react";
@@ -21,14 +22,7 @@ export const Route = createFileRoute("/employee/map")({
   component: EmployeeMap,
 });
 
-const sidebarItems = [
-  { title: "لوحة التحكم", icon: LayoutDashboard, href: "/employee" },
-  { title: "أوامر العمل", icon: ClipboardList, href: "/employee/orders" },
-  { title: "خريطة المرافق", icon: MapIcon, href: "/employee/map" },
-  { title: "الصيانة الوقائية", icon: Wrench, href: "/employee/preventive" },
-  { title: "إدارة المباني", icon: Building2, href: "/employee/buildings" },
-  { title: "التقارير", icon: BarChart3, href: "/employee/reports" },
-];
+const sidebarItems = employeeSidebarItems;
 
 function EmployeeMap() {
   const [buildings, setBuildings] = React.useState<any[]>([]);

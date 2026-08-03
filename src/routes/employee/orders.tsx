@@ -1,5 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { PortalLayout } from "@/components/PortalLayout";
+import { employeeSidebarItems } from "@/lib/employee-nav";
 import {
   LayoutDashboard,
   ClipboardList,
@@ -62,14 +63,7 @@ export const Route = createFileRoute("/employee/orders")({
   component: EmployeeOrders,
 });
 
-const sidebarItems = [
-  { title: "لوحة التحكم", icon: LayoutDashboard, href: "/employee" },
-  { title: "أوامر العمل", icon: ClipboardList, href: "/employee/orders" },
-  { title: "خريطة المرافق", icon: MapIcon, href: "/employee/map" },
-  { title: "الصيانة الوقائية", icon: Wrench, href: "/employee/preventive" },
-  { title: "إدارة المباني", icon: Building2, href: "/employee/buildings" },
-  { title: "التقارير", icon: BarChart3, href: "/employee/reports" },
-];
+const sidebarItems = employeeSidebarItems;
 
 function EmployeeOrders() {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
