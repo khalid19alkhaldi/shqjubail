@@ -1,4 +1,4 @@
-import { LayoutDashboard, ClipboardList, Wrench, Building2, BarChart3, Map as MapIcon, Boxes, HardHat } from "lucide-react";
+import { LayoutDashboard, ClipboardList, Wrench, Building2, BarChart3, Map as MapIcon, Boxes, HardHat, Wallet } from "lucide-react";
 
 export const employeeSidebarItems = [
   { title: "لوحة التحكم", icon: LayoutDashboard, href: "/employee" },
@@ -8,5 +8,6 @@ export const employeeSidebarItems = [
   { title: "إدارة المباني", icon: Building2, href: "/employee/buildings" },
   { title: "مستودع قطع الغيار", icon: Boxes, href: "/employee/inventory" },
   { title: "المقاولون والتقييم", icon: HardHat, href: "/employee/vendors" },
+  { title: "الميزانية والتكاليف", icon: Wallet, href: "/employee/costs" },
   { title: "التقارير", icon: BarChart3, href: "/employee/reports" },
 ];
