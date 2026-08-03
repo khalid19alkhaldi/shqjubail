@@ -84,16 +84,17 @@ function Nav() {
           <a href="#workflow" className="hover:text-primary">آلية العمل</a>
           <a href="#portals" className="hover:text-primary">البوابات</a>
           <a href="#contractors" className="hover:text-primary">المقاولون</a>
+          <Link to="/request" className="hover:text-primary">بلاغ صيانة</Link>
           <a href="#cta" className="hover:text-primary">تواصل معنا</a>
         </nav>
         <div className="flex items-center gap-3">
           <Link to="/employee/login" className="hidden rounded-full border border-primary/30 px-5 py-2 text-sm font-semibold text-primary transition hover:bg-primary/5 sm:inline-flex">
             دخول الموظفين
           </Link>
-          <a href="#cta" className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground shadow-card-soft transition hover:bg-primary-deep">
-            اطلب عرضًا
+          <Link to="/request" className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground shadow-card-soft transition hover:bg-primary-deep">
+            رفع بلاغ صيانة
             <ArrowLeft className="h-4 w-4" />
-          </a>
+          </Link>
         </div>
       </div>
     </header>

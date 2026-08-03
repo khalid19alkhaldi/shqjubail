@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RequestRouteImport } from './routes/request'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TechnicianIndexRouteImport } from './routes/technician/index'
 import { Route as EmployeeIndexRouteImport } from './routes/employee/index'
@@ -23,12 +24,18 @@ import { Route as EmployeeOrdersRouteImport } from './routes/employee/orders'
 import { Route as EmployeeMapRouteImport } from './routes/employee/map'
 import { Route as EmployeeLoginRouteImport } from './routes/employee/login'
 import { Route as EmployeeInventoryRouteImport } from './routes/employee/inventory'
+import { Route as EmployeeCostsRouteImport } from './routes/employee/costs'
 import { Route as EmployeeBuildingsRouteImport } from './routes/employee/buildings'
 import { Route as ContractorLoginRouteImport } from './routes/contractor/login'
 import { Route as ContractorInvoicesRouteImport } from './routes/contractor/invoices'
 import { Route as ContractorHistoryRouteImport } from './routes/contractor/history'
 import { Route as ContractorAssignedRouteImport } from './routes/contractor/assigned'
 
+const RequestRoute = RequestRouteImport.update({
+  id: '/request',
+  path: '/request',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -99,6 +106,11 @@ const EmployeeInventoryRoute = EmployeeInventoryRouteImport.update({
   path: '/employee/inventory',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EmployeeCostsRoute = EmployeeCostsRouteImport.update({
+  id: '/employee/costs',
+  path: '/employee/costs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EmployeeBuildingsRoute = EmployeeBuildingsRouteImport.update({
   id: '/employee/buildings',
   path: '/employee/buildings',
@@ -127,11 +139,13 @@ const ContractorAssignedRoute = ContractorAssignedRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/request': typeof RequestRoute
   '/contractor/assigned': typeof ContractorAssignedRoute
   '/contractor/history': typeof ContractorHistoryRoute
   '/contractor/invoices': typeof ContractorInvoicesRoute
   '/contractor/login': typeof ContractorLoginRoute
   '/employee/buildings': typeof EmployeeBuildingsRoute
+  '/employee/costs': typeof EmployeeCostsRoute
   '/employee/inventory': typeof EmployeeInventoryRoute
   '/employee/login': typeof EmployeeLoginRoute
   '/employee/map': typeof EmployeeMapRoute
@@ -148,11 +162,13 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/request': typeof RequestRoute
   '/contractor/assigned': typeof ContractorAssignedRoute
   '/contractor/history': typeof ContractorHistoryRoute
   '/contractor/invoices': typeof ContractorInvoicesRoute
   '/contractor/login': typeof ContractorLoginRoute
   '/employee/buildings': typeof EmployeeBuildingsRoute
+  '/employee/costs': typeof EmployeeCostsRoute
   '/employee/inventory': typeof EmployeeInventoryRoute
   '/employee/login': typeof EmployeeLoginRoute
   '/employee/map': typeof EmployeeMapRoute
@@ -170,11 +186,13 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/request': typeof RequestRoute
   '/contractor/assigned': typeof ContractorAssignedRoute
   '/contractor/history': typeof ContractorHistoryRoute
   '/contractor/invoices': typeof ContractorInvoicesRoute
   '/contractor/login': typeof ContractorLoginRoute
   '/employee/buildings': typeof EmployeeBuildingsRoute
+  '/employee/costs': typeof EmployeeCostsRoute
   '/employee/inventory': typeof EmployeeInventoryRoute
   '/employee/login': typeof EmployeeLoginRoute
   '/employee/map': typeof EmployeeMapRoute
@@ -193,11 +211,13 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/request'
     | '/contractor/assigned'
     | '/contractor/history'
     | '/contractor/invoices'
     | '/contractor/login'
     | '/employee/buildings'
+    | '/employee/costs'
     | '/employee/inventory'
     | '/employee/login'
     | '/employee/map'
@@ -214,11 +234,13 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/request'
     | '/contractor/assigned'
     | '/contractor/history'
     | '/contractor/invoices'
     | '/contractor/login'
     | '/employee/buildings'
+    | '/employee/costs'
     | '/employee/inventory'
     | '/employee/login'
     | '/employee/map'
@@ -235,11 +257,13 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/request'
     | '/contractor/assigned'
     | '/contractor/history'
     | '/contractor/invoices'
     | '/contractor/login'
     | '/employee/buildings'
+    | '/employee/costs'
     | '/employee/inventory'
     | '/employee/login'
     | '/employee/map'
@@ -257,11 +281,13 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  RequestRoute: typeof RequestRoute
   ContractorAssignedRoute: typeof ContractorAssignedRoute
   ContractorHistoryRoute: typeof ContractorHistoryRoute
   ContractorInvoicesRoute: typeof ContractorInvoicesRoute
   ContractorLoginRoute: typeof ContractorLoginRoute
   EmployeeBuildingsRoute: typeof EmployeeBuildingsRoute
+  EmployeeCostsRoute: typeof EmployeeCostsRoute
   EmployeeInventoryRoute: typeof EmployeeInventoryRoute
   EmployeeLoginRoute: typeof EmployeeLoginRoute
   EmployeeMapRoute: typeof EmployeeMapRoute
@@ -279,6 +305,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/request': {
+      id: '/request'
+      path: '/request'
+      fullPath: '/request'
+      preLoaderRoute: typeof RequestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -377,6 +410,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmployeeInventoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/employee/costs': {
+      id: '/employee/costs'
+      path: '/employee/costs'
+      fullPath: '/employee/costs'
+      preLoaderRoute: typeof EmployeeCostsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/employee/buildings': {
       id: '/employee/buildings'
       path: '/employee/buildings'
@@ -417,11 +457,13 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  RequestRoute: RequestRoute,
   ContractorAssignedRoute: ContractorAssignedRoute,
   ContractorHistoryRoute: ContractorHistoryRoute,
   ContractorInvoicesRoute: ContractorInvoicesRoute,
   ContractorLoginRoute: ContractorLoginRoute,
   EmployeeBuildingsRoute: EmployeeBuildingsRoute,
+  EmployeeCostsRoute: EmployeeCostsRoute,
   EmployeeInventoryRoute: EmployeeInventoryRoute,
   EmployeeLoginRoute: EmployeeLoginRoute,
   EmployeeMapRoute: EmployeeMapRoute,
