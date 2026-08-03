@@ -1,5 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { PortalLayout } from "@/components/PortalLayout";
+import { employeeSidebarItems } from "@/lib/employee-nav";
 import { LayoutDashboard, ClipboardList, Wrench, Building2, BarChart3, Download, TrendingUp, Map as MapIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,14 +29,7 @@ export const Route = createFileRoute("/employee/reports")({
   component: EmployeeReports,
 });
 
-const sidebarItems = [
-  { title: "لوحة التحكم", icon: LayoutDashboard, href: "/employee" },
-  { title: "أوامر العمل", icon: ClipboardList, href: "/employee/orders" },
-  { title: "خريطة المرافق", icon: MapIcon, href: "/employee/map" },
-  { title: "الصيانة الوقائية", icon: Wrench, href: "/employee/preventive" },
-  { title: "إدارة المباني", icon: Building2, href: "/employee/buildings" },
-  { title: "التقارير", icon: BarChart3, href: "/employee/reports" },
-];
+const sidebarItems = employeeSidebarItems;
 
 const chartData = [
   { name: "يناير", value: 400 },
