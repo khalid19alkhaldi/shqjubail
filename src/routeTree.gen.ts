@@ -25,6 +25,7 @@ import { Route as EmployeeMapRouteImport } from './routes/employee/map'
 import { Route as EmployeeLoginRouteImport } from './routes/employee/login'
 import { Route as EmployeeInventoryRouteImport } from './routes/employee/inventory'
 import { Route as EmployeeCostsRouteImport } from './routes/employee/costs'
+import { Route as EmployeeCodesRouteImport } from './routes/employee/codes'
 import { Route as EmployeeBuildingsRouteImport } from './routes/employee/buildings'
 import { Route as ContractorLoginRouteImport } from './routes/contractor/login'
 import { Route as ContractorInvoicesRouteImport } from './routes/contractor/invoices'
@@ -111,6 +112,11 @@ const EmployeeCostsRoute = EmployeeCostsRouteImport.update({
   path: '/employee/costs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EmployeeCodesRoute = EmployeeCodesRouteImport.update({
+  id: '/employee/codes',
+  path: '/employee/codes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EmployeeBuildingsRoute = EmployeeBuildingsRouteImport.update({
   id: '/employee/buildings',
   path: '/employee/buildings',
@@ -145,6 +151,7 @@ export interface FileRoutesByFullPath {
   '/contractor/invoices': typeof ContractorInvoicesRoute
   '/contractor/login': typeof ContractorLoginRoute
   '/employee/buildings': typeof EmployeeBuildingsRoute
+  '/employee/codes': typeof EmployeeCodesRoute
   '/employee/costs': typeof EmployeeCostsRoute
   '/employee/inventory': typeof EmployeeInventoryRoute
   '/employee/login': typeof EmployeeLoginRoute
@@ -168,6 +175,7 @@ export interface FileRoutesByTo {
   '/contractor/invoices': typeof ContractorInvoicesRoute
   '/contractor/login': typeof ContractorLoginRoute
   '/employee/buildings': typeof EmployeeBuildingsRoute
+  '/employee/codes': typeof EmployeeCodesRoute
   '/employee/costs': typeof EmployeeCostsRoute
   '/employee/inventory': typeof EmployeeInventoryRoute
   '/employee/login': typeof EmployeeLoginRoute
@@ -192,6 +200,7 @@ export interface FileRoutesById {
   '/contractor/invoices': typeof ContractorInvoicesRoute
   '/contractor/login': typeof ContractorLoginRoute
   '/employee/buildings': typeof EmployeeBuildingsRoute
+  '/employee/codes': typeof EmployeeCodesRoute
   '/employee/costs': typeof EmployeeCostsRoute
   '/employee/inventory': typeof EmployeeInventoryRoute
   '/employee/login': typeof EmployeeLoginRoute
@@ -217,6 +226,7 @@ export interface FileRouteTypes {
     | '/contractor/invoices'
     | '/contractor/login'
     | '/employee/buildings'
+    | '/employee/codes'
     | '/employee/costs'
     | '/employee/inventory'
     | '/employee/login'
@@ -240,6 +250,7 @@ export interface FileRouteTypes {
     | '/contractor/invoices'
     | '/contractor/login'
     | '/employee/buildings'
+    | '/employee/codes'
     | '/employee/costs'
     | '/employee/inventory'
     | '/employee/login'
@@ -263,6 +274,7 @@ export interface FileRouteTypes {
     | '/contractor/invoices'
     | '/contractor/login'
     | '/employee/buildings'
+    | '/employee/codes'
     | '/employee/costs'
     | '/employee/inventory'
     | '/employee/login'
@@ -287,6 +299,7 @@ export interface RootRouteChildren {
   ContractorInvoicesRoute: typeof ContractorInvoicesRoute
   ContractorLoginRoute: typeof ContractorLoginRoute
   EmployeeBuildingsRoute: typeof EmployeeBuildingsRoute
+  EmployeeCodesRoute: typeof EmployeeCodesRoute
   EmployeeCostsRoute: typeof EmployeeCostsRoute
   EmployeeInventoryRoute: typeof EmployeeInventoryRoute
   EmployeeLoginRoute: typeof EmployeeLoginRoute
@@ -417,6 +430,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmployeeCostsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/employee/codes': {
+      id: '/employee/codes'
+      path: '/employee/codes'
+      fullPath: '/employee/codes'
+      preLoaderRoute: typeof EmployeeCodesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/employee/buildings': {
       id: '/employee/buildings'
       path: '/employee/buildings'
@@ -463,6 +483,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContractorInvoicesRoute: ContractorInvoicesRoute,
   ContractorLoginRoute: ContractorLoginRoute,
   EmployeeBuildingsRoute: EmployeeBuildingsRoute,
+  EmployeeCodesRoute: EmployeeCodesRoute,
   EmployeeCostsRoute: EmployeeCostsRoute,
   EmployeeInventoryRoute: EmployeeInventoryRoute,
   EmployeeLoginRoute: EmployeeLoginRoute,
