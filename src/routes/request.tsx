@@ -12,23 +12,17 @@ import {
 import { toast } from "sonner";
 import { ClipboardList, Search, CheckCircle2, ArrowRight } from "lucide-react";
 import { saveOrder, getOrders } from "@/lib/data-service";
+import { loadCodes, verifyBuildingCode } from "@/lib/building-codes";
 import logo from "@/assets/logo.png";
 
 export const Route = createFileRoute("/request")({
   component: PublicRequestPage,
 });
 
-const BUILDINGS = ["مدرسة الفرقان", "مسجد الفاروق", "المبنى الإداري", "مبنى الأوقاف"];
 const CATEGORIES = ["تكييف", "كهرباء", "سباكة", "دهانات", "مصاعد", "أمن وسلامة"];
 const PRIORITIES = ["عالية", "متوسطة", "منخفضة"];
 
-// رمز دخول لكل مبنى يُسلَّم لمنسوبي المرفق فقط (يمنع البلاغات الوهمية من العامة)
-const BUILDING_CODES: Record<string, string> = {
-  "مدرسة الفرقان": "FRQ2024",
-  "مسجد الفاروق": "FRQ-M01",
-  "المبنى الإداري": "ADM-100",
-  "مبنى الأوقاف": "WQF-200",
-};
+// رموز المباني تُصدر وتُجدَّد من قسم الصيانة (بوابة الموظفين ← رموز المباني)
 
 const RATE_KEY = "shq_request_rate";
 const RATE_LIMIT = 3;
@@ -44,8 +38,9 @@ const getRecentSubmissions = (): number[] => {
 };
 
 function PublicRequestPage() {
+  const [buildings, setBuildings] = React.useState<string[]>([]);
   const [form, setForm] = React.useState({
-    name: "", phone: "", building: BUILDINGS[0], category: CATEGORIES[0],
+    name: "", phone: "", building: "", category: CATEGORIES[0],
     priority: "متوسطة", title: "", desc: "",
   });
   const [loading, setLoading] = React.useState(false);
@@ -56,6 +51,12 @@ function PublicRequestPage() {
   const [code, setCode] = React.useState("");
   const [honeypot, setHoneypot] = React.useState("");
 
+  React.useEffect(() => {
+    const list = loadCodes().filter((c) => c.active).map((c) => c.building);
+    setBuildings(list);
+    setForm((f) => ({ ...f, building: f.building || list[0] || "" }));
+  }, []);
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (honeypot.trim()) return; // فخ للبوتات
@@ -65,10 +66,9 @@ function PublicRequestPage() {
       });
       return;
     }
-    if (code.trim().toUpperCase() !== BUILDING_CODES[form.building]) {
-      toast.error("رمز المبنى غير صحيح", {
-        description: "الرمز يُسلَّم لمنسوبي المرفق من قسم الصيانة.",
-      });
+    const check = verifyBuildingCode(form.building, code);
+    if (!check.ok) {
+      toast.error("تعذر التحقق من رمز المبنى", { description: check.reason });
       return;
     }
     const recent = getRecentSubmissions();
@@ -168,7 +168,7 @@ function PublicRequestPage() {
                     <Label className="text-sm font-bold">المبنى</Label>
                     <Select value={form.building} onValueChange={(v) => setForm({ ...form, building: v })}>
                       <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
-                      <SelectContent>{BUILDINGS.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}</SelectContent>
+                      <SelectContent>{buildings.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}</SelectContent>
                     </Select>
                   </div>
                   <div className="space-y-2">
@@ -192,7 +192,7 @@ function PublicRequestPage() {
                   <div className="space-y-2">
                     <Label className="text-sm font-bold">رمز المبنى</Label>
                     <Input className="rounded-xl" value={code} onChange={(e) => setCode(e.target.value)} placeholder="الرمز المسلَّم من قسم الصيانة" />
-                    <p className="text-[11px] text-muted-foreground">مطلوب للتأكد أن مقدم البلاغ من منسوبي المرفق.</p>
+                    <p className="text-[11px] text-muted-foreground">رمز متجدد يُصدره قسم الصيانة لكل مبنى وله تاريخ انتهاء.</p>
                   </div>
                 </div>
                 <input
