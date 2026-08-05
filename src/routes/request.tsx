@@ -22,6 +22,27 @@ const BUILDINGS = ["مدرسة الفرقان", "مسجد الفاروق", "ال
 const CATEGORIES = ["تكييف", "كهرباء", "سباكة", "دهانات", "مصاعد", "أمن وسلامة"];
 const PRIORITIES = ["عالية", "متوسطة", "منخفضة"];
 
+// رمز دخول لكل مبنى يُسلَّم لمنسوبي المرفق فقط (يمنع البلاغات الوهمية من العامة)
+const BUILDING_CODES: Record<string, string> = {
+  "مدرسة الفرقان": "FRQ2024",
+  "مسجد الفاروق": "FRQ-M01",
+  "المبنى الإداري": "ADM-100",
+  "مبنى الأوقاف": "WQF-200",
+};
+
+const RATE_KEY = "shq_request_rate";
+const RATE_LIMIT = 3;
+const RATE_WINDOW_MS = 60 * 60 * 1000;
+
+const getRecentSubmissions = (): number[] => {
+  try {
+    const raw = JSON.parse(localStorage.getItem(RATE_KEY) || "[]") as number[];
+    return raw.filter((t) => Date.now() - t < RATE_WINDOW_MS);
+  } catch {
+    return [];
+  }
+};
+
 function PublicRequestPage() {
   const [form, setForm] = React.useState({
     name: "", phone: "", building: BUILDINGS[0], category: CATEGORIES[0],
@@ -32,12 +53,28 @@ function PublicRequestPage() {
   const [trackId, setTrackId] = React.useState("");
   const [trackResult, setTrackResult] = React.useState<any>(null);
   const [tracked, setTracked] = React.useState(false);
+  const [code, setCode] = React.useState("");
+  const [honeypot, setHoneypot] = React.useState("");
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (honeypot.trim()) return; // فخ للبوتات
     if (!form.name.trim() || !/^0\d{9}$/.test(form.phone.trim()) || form.title.trim().length < 5) {
       toast.error("تحقق من البيانات", {
         description: "الاسم مطلوب، الجوال بصيغة 05xxxxxxxx، وعنوان البلاغ 5 أحرف على الأقل.",
+      });
+      return;
+    }
+    if (code.trim().toUpperCase() !== BUILDING_CODES[form.building]) {
+      toast.error("رمز المبنى غير صحيح", {
+        description: "الرمز يُسلَّم لمنسوبي المرفق من قسم الصيانة.",
+      });
+      return;
+    }
+    const recent = getRecentSubmissions();
+    if (recent.length >= RATE_LIMIT) {
+      toast.error("تجاوزت الحد المسموح", {
+        description: `يمكن إرسال ${RATE_LIMIT} بلاغات كحد أقصى خلال ساعة. حاول لاحقاً.`,
       });
       return;
     }
@@ -50,14 +87,20 @@ function PublicRequestPage() {
         building: form.building,
         category: form.category,
         priority: form.priority,
-        status: "بانتظار قبول المقاول",
+        status: "بانتظار التحقق",
         date: new Date().toISOString().split("T")[0],
         contractor: "غير مسند",
         desc: `${form.desc}\nمقدم البلاغ: ${form.name} - ${form.phone}`,
       });
+      try {
+        localStorage.setItem(RATE_KEY, JSON.stringify([...recent, Date.now()]));
+      } catch {}
       setTicket(id);
-      toast.success(`تم استلام بلاغك برقم ${id}`);
+      toast.success(`تم استلام بلاغك برقم ${id}`, {
+        description: "سيتم التحقق منه من قسم الصيانة قبل الإسناد.",
+      });
       setForm({ ...form, title: "", desc: "" });
+      setCode("");
     } catch {
       toast.error("تعذر إرسال البلاغ، حاول لاحقاً.");
     } finally {
@@ -102,7 +145,7 @@ function PublicRequestPage() {
               <CheckCircle2 className="h-6 w-6 text-primary" />
               <div>
                 <div className="font-bold text-primary-deep">تم استلام البلاغ بنجاح</div>
-                <p className="text-sm text-muted-foreground">رقم المتابعة: <span className="font-bold">{ticket}</span> — احتفظ به لمتابعة الحالة.</p>
+                <p className="text-sm text-muted-foreground">رقم المتابعة: <span className="font-bold">{ticket}</span> — البلاغ الآن «بانتظار التحقق» من قسم الصيانة.</p>
               </div>
             </CardContent>
           </Card>
@@ -146,7 +189,21 @@ function PublicRequestPage() {
                     <Label className="text-sm font-bold">عنوان البلاغ</Label>
                     <Input className="rounded-xl" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="مثلاً: عطل مكيف الفصل الثاني" />
                   </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm font-bold">رمز المبنى</Label>
+                    <Input className="rounded-xl" value={code} onChange={(e) => setCode(e.target.value)} placeholder="الرمز المسلَّم من قسم الصيانة" />
+                    <p className="text-[11px] text-muted-foreground">مطلوب للتأكد أن مقدم البلاغ من منسوبي المرفق.</p>
+                  </div>
                 </div>
+                <input
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                  className="absolute h-0 w-0 opacity-0"
+                />
                 <div className="space-y-2">
                   <Label className="text-sm font-bold">وصف المشكلة</Label>
                   <Textarea className="rounded-xl" rows={4} value={form.desc} onChange={(e) => setForm({ ...form, desc: e.target.value })} placeholder="اذكر تفاصيل إضافية تساعد الفني" />
