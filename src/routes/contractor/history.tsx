@@ -22,7 +22,6 @@ const sidebarItems = [
   { title: "لوحة التحكم", icon: LayoutDashboard, href: "/contractor" },
   { title: "الأوامر المسندة", icon: ClipboardList, href: "/contractor/assigned" },
   { title: "إنجازات سابقة", icon: CheckSquare, href: "/contractor/history" },
-  { title: "الفواتير", icon: FileText, href: "/contractor/invoices" },
 ];
 
 function ContractorHistory() {
