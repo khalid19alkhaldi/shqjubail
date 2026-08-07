@@ -178,9 +178,9 @@ function TrustBar() {
 const features = [
   { icon: ClipboardList, title: "أوامر العمل", desc: "أنشئ وتابع وأرسل أوامر العمل إلى الموظفين أو المقاولين، مع الحالة والأولوية والمرفقات." },
   { icon: Wrench, title: "الصيانة الوقائية", desc: "جداول دورية للمكيفات والمصاعد والكهرباء والمياه، مع تذكيرات تلقائية ومهام تفتيش." },
-  { icon: Building2, title: "إدارة المباني والأصول", desc: "سجل كامل لكل مبنى وطابق وأصل — من مكيف إلى مضخة — مع تاريخ الصيانة والتكاليف." },
-  { icon: HardHat, title: "بوابة المقاولين", desc: "استلام الأوامر، تحديث الحالة، رفع صور قبل/بعد، وإصدار الفواتير من واجهة واحدة." },
-  { icon: BarChart3, title: "تقارير وتحليلات", desc: "مؤشرات أداء لحظية: زمن الاستجابة، تكلفة الصيانة، المرافق الأعلى استهلاكًا." },
+  { icon: Building2, title: "إدارة المباني والأصول", desc: "سجل كامل لكل مبنى وطابق وأصل — من مكيف إلى مضخة — مع تاريخ الصيانة وجدول الفحص الدوري." },
+  { icon: HardHat, title: "بوابة المقاولين", desc: "استلام الأوامر، تحديث الحالة، رفع صور قبل/بعد، وتوثيق الإنجاز من واجهة واحدة." },
+  { icon: BarChart3, title: "تقارير وتحليلات", desc: "مؤشرات أداء لحظية: زمن الاستجابة، معدل الإنجاز، المرافق الأكثر أعطالاً." },
   { icon: ShieldCheck, title: "صلاحيات وحوكمة", desc: "أدوار محددة للموظفين، سجل تدقيق لكل عملية، وتوافق مع سياسات الجمعية." },
 ];
 
@@ -274,7 +274,7 @@ function PortalsSection() {
       icon: HardHat,
       title: "بوابة المقاولين",
       img: heroBuilding,
-      points: ["استلام الأوامر المسنَدة والموافقة عليها", "رفع صور «قبل/بعد» وقطع الغيار المستخدمة", "تتبع الفواتير وحالة الدفع", "تقييم الأداء والسمعة"],
+      points: ["استلام الأوامر المسنَدة والموافقة عليها", "رفع صور «قبل/بعد» وقطع الغيار المستخدمة", "تحديث حالة التنفيذ لحظياً", "تقييم الأداء والسمعة"],
       cta: "دخول المقاولين",
       href: "/contractor/login"
     },
@@ -321,7 +321,7 @@ function DashboardPreview() {
         <div className="mx-auto max-w-2xl text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-gold/10 px-4 py-1.5 text-xs font-bold text-gold">لوحة التحكم</div>
           <h2 className="mt-4 text-3xl font-black sm:text-4xl">رؤية كاملة لجميع مباني الجمعية في شاشة واحدة</h2>
-          <p className="mt-4 text-primary-foreground/80">تتبّع الأوامر النشطة، الصيانة القادمة، أداء المقاولين، والتكاليف — كلها لحظيًا.</p>
+          <p className="mt-4 text-primary-foreground/80">تتبّع الأوامر النشطة، الصيانة القادمة، أداء المقاولين، وحالة كل مبنى — كلها لحظيًا.</p>
         </div>
         <div className="mx-auto mt-12 max-w-6xl">
           <div className="relative">
@@ -400,9 +400,9 @@ function Contractors() {
         <div className="order-1 lg:order-2">
           <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold text-primary">للمقاولين</div>
           <h2 className="mt-4 text-3xl font-black text-primary-deep sm:text-4xl">انضم إلى شبكة مقاولي الجمعية</h2>
-          <p className="mt-4 text-muted-foreground">نظام واضح لاستلام الأوامر، توثيق التنفيذ، ورفع الفواتير — يقلل الوقت الضائع ويضمن الشفافية بين الفريق الفني والجمعية.</p>
+          <p className="mt-4 text-muted-foreground">نظام واضح لاستلام الأوامر، توثيق التنفيذ، ومتابعة الإنجاز — يقلل الوقت الضائع ويضمن الشفافية بين الفريق الفني والجمعية.</p>
           <ul className="mt-6 space-y-3 text-sm">
-            {["استلام أوامر مسنَدة بحسب التخصص والمنطقة", "إثبات تنفيذ بالصور والموقع الجغرافي", "تسعير واضح ومتابعة الفواتير حتى الصرف", "تقييم أداء يبني سمعتك مع الجمعية"].map((p) => (
+            {["استلام أوامر مسنَدة بحسب التخصص والمنطقة", "إثبات تنفيذ بالصور والموقع الجغرافي", "خطة تنفيذ واضحة ومتابعة حتى الإغلاق", "تقييم أداء يبني سمعتك مع الجمعية"].map((p) => (
               <li key={p} className="flex items-start gap-3"><CheckCircle2 className="mt-0.5 h-5 w-5 text-primary" />{p}</li>
             ))}
           </ul>
