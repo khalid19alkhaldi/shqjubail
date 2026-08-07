@@ -4,7 +4,6 @@ import {
   LayoutDashboard,
   ClipboardList,
   CheckSquare,
-  FileText,
   Clock,
   CheckCircle2,
   HardHat,
@@ -167,7 +166,7 @@ function ContractorDashboard() {
                 </li>
                 <li className="flex gap-3">
                   <div className="h-2 w-2 rounded-full bg-gold mt-2 shrink-0" />
-                  <p className="text-sm text-muted-foreground">سيتم صرف الفواتير المعتمدة خلال 15 يوم عمل من تاريخ الاعتماد.</p>
+                  <p className="text-sm text-muted-foreground">لا يُغلق أمر العمل إلا بعد اعتماد الموظف المسؤول للإنجاز.</p>
                 </li>
               </ul>
             </CardContent>

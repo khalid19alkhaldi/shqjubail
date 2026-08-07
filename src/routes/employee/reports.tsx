@@ -108,9 +108,9 @@ function EmployeeReports() {
         <div className="grid gap-6 sm:grid-cols-3">
           <Card className="border-none shadow-card-soft bg-primary-deep text-white">
             <CardContent className="p-6">
-              <div className="text-sm opacity-80">إجمالي التكاليف</div>
-              <div className="text-3xl font-black mt-2">12,450 ر.س</div>
-              <div className="text-xs mt-2 text-gold font-bold">+12% عن الشهر الماضي</div>
+              <div className="text-sm opacity-80">متوسط زمن الإنجاز</div>
+              <div className="text-3xl font-black mt-2">1.8 يوم</div>
+              <div className="text-xs mt-2 text-gold font-bold">أسرع بـ 12% عن الشهر الماضي</div>
             </CardContent>
           </Card>
           <Card className="border-none shadow-card-soft bg-gold text-gold-foreground">

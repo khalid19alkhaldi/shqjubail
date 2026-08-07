@@ -203,9 +203,9 @@ function EmployeeOrders() {
                           }`} />
                           <span className="text-sm font-medium">{order.status}</span>
                         </div>
-                        {order.quote && (
+                        {order.plan && (
                           <div className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md inline-block">
-                            العرض: {order.quote}
+                            الخطة: {order.plan}
                           </div>
                         )}
                       </div>

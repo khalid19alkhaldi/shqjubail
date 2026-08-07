@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { PortalLayout } from "@/components/PortalLayout";
-import { LayoutDashboard, ClipboardList, CheckSquare, FileText, Star, Calendar } from "lucide-react";
+import { LayoutDashboard, ClipboardList, CheckSquare, Star, Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MOCK_ORDERS } from "@/lib/mock-data";
