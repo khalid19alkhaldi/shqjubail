@@ -109,7 +109,7 @@ export const getDashboardStats = async () => {
 
     const active = orders.filter((o: any) => o.status !== "مكتمل" && o.status !== "مرفوض من المقاول").length;
     const completed = orders.filter((o: any) => o.status === "مكتمل").length;
-    const pendingApproval = orders.filter((o: any) => o.status === "تم تقديم عرض مالي").length;
+    const pendingApproval = orders.filter((o: any) => o.status === "تم تقديم خطة تنفيذ").length;
 
     return { active, completed, pendingApproval, buildings: buildings.length };
   } catch (error) {

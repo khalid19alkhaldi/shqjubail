@@ -12,33 +12,38 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Calculator, Send } from "lucide-react";
+import { ClipboardCheck, Send } from "lucide-react";
 import { updateOrderStatus } from "@/lib/data-service";
 
-interface ContractorQuoteModalProps {
+interface ContractorPlanModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   orderId: string;
   orderTitle: string;
 }
 
-export function ContractorQuoteModal({ isOpen, onOpenChange, orderId, orderTitle }: ContractorQuoteModalProps) {
+export function ContractorPlanModal({ isOpen, onOpenChange, orderId, orderTitle }: ContractorPlanModalProps) {
   const [loading, setLoading] = React.useState(false);
-  const [amount, setAmount] = React.useState("");
+  const [duration, setDuration] = React.useState("");
+  const [crew, setCrew] = React.useState("");
+  const [parts, setParts] = React.useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     setTimeout(() => {
-      updateOrderStatus(orderId, "تم تقديم عرض مالي", { quote: `${amount} ر.س` });
+      updateOrderStatus(orderId, "تم تقديم خطة تنفيذ", {
+        plan: `${duration} — ${crew} فني`,
+        parts,
+      });
       setLoading(false);
       onOpenChange(false);
-      toast.success("تم إرسال العرض المالي بنجاح", {
-        description: `سيتم مراجعة العرض من قبل إدارة الجمعية للطلب ${orderId}`,
+      toast.success("تم إرسال خطة التنفيذ بنجاح", {
+        description: `سيراجعها الموظف المسؤول عن الطلب ${orderId}`,
       });
       window.location.reload();
-    }, 1000);
+    }, 800);
   };
 
   return (
@@ -46,40 +51,50 @@ export function ContractorQuoteModal({ isOpen, onOpenChange, orderId, orderTitle
       <DialogContent className="sm:max-w-[450px]" dir="rtl">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold flex items-center gap-2 text-primary-deep">
-            <Calculator className="h-6 w-6 text-primary" />
-            تقديم عرض مالي للاصلاح
+            <ClipboardCheck className="h-6 w-6 text-primary" />
+            قبول العمل وتقديم خطة تنفيذ
           </DialogTitle>
           <DialogDescription className="text-right">
-            أدخل التكلفة التقديرية ووقت التنفيذ المتوقع للطلب: <span className="font-bold">{orderTitle}</span>
+            حدّد مدة التنفيذ وفريق العمل للطلب: <span className="font-bold">{orderTitle}</span>
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6 py-4 text-right">
           <div className="grid gap-4">
             <div className="space-y-2">
-              <Label htmlFor="amount" className="text-sm font-bold">المبلغ المطلوب (ر.س)</Label>
+              <Label htmlFor="duration" className="text-sm font-bold">مدة التنفيذ المتوقعة</Label>
               <Input
-                id="amount"
-                type="number"
-                placeholder="مثال: 1500"
+                id="duration"
+                placeholder="مثال: يومان عمل"
                 required
                 className="rounded-xl"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="duration" className="text-sm font-bold">وقت التنفيذ المتوقع</Label>
-              <Input id="duration" placeholder="مثال: يومين عمل" required className="rounded-xl" />
+              <Label htmlFor="crew" className="text-sm font-bold">عدد الفنيين</Label>
+              <Input
+                id="crew"
+                type="number"
+                min={1}
+                placeholder="مثال: 2"
+                required
+                className="rounded-xl"
+                value={crew}
+                onChange={(e) => setCrew(e.target.value)}
+              />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="notes" className="text-sm font-bold">ملاحظات العرض / قطع الغيار</Label>
+              <Label htmlFor="parts" className="text-sm font-bold">قطع الغيار / المتطلبات</Label>
               <Textarea
-                id="notes"
-                placeholder="اذكر تفاصيل التكلفة أو أي قطع غيار مطلوبة..."
+                id="parts"
+                placeholder="اذكر القطع أو المعدات المطلوبة وأي ترتيبات دخول للمبنى..."
                 className="rounded-xl min-h-[100px]"
+                value={parts}
+                onChange={(e) => setParts(e.target.value)}
               />
             </div>
           </div>
@@ -91,7 +106,7 @@ export function ContractorQuoteModal({ isOpen, onOpenChange, orderId, orderTitle
               disabled={loading}
             >
               <Send className="h-4 w-4" />
-              {loading ? "جاري الإرسال..." : "إرسال العرض للموظف"}
+              {loading ? "جاري الإرسال..." : "إرسال الخطة للموظف"}
             </Button>
             <Button
               type="button"

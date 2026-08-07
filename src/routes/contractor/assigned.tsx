@@ -1,12 +1,12 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { PortalLayout } from "@/components/PortalLayout";
-import { LayoutDashboard, ClipboardList, CheckSquare, FileText, MapPin, Calendar, Clock, Camera, CheckCircle2, XCircle, Calculator } from "lucide-react";
+import { LayoutDashboard, ClipboardList, CheckSquare, MapPin, Calendar, Clock, Camera, CheckCircle2, XCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import React from "react";
-import { ContractorQuoteModal } from "@/components/ContractorQuoteModal";
+import { ContractorPlanModal } from "@/components/ContractorPlanModal";
 import { SignatureModal } from "@/components/SignatureModal";
 import {
   Dialog,
@@ -37,7 +37,6 @@ const sidebarItems = [
   { title: "لوحة التحكم", icon: LayoutDashboard, href: "/contractor" },
   { title: "الأوامر المسندة", icon: ClipboardList, href: "/contractor/assigned" },
   { title: "إنجازات سابقة", icon: CheckSquare, href: "/contractor/history" },
-  { title: "الفواتير", icon: FileText, href: "/contractor/invoices" },
 ];
 
 function ContractorAssigned() {
@@ -124,17 +123,17 @@ function ContractorAssigned() {
                       <>
                         <Button className="gap-2 rounded-xl flex-1 bg-primary hover:bg-primary-deep" onClick={() => handleQuoteClick(order.id, order.title)}>
                           <CheckCircle2 className="h-4 w-4" />
-                          قبول وتقديم عرض مالي
+                          قبول وتقديم خطة تنفيذ
                         </Button>
                         <Button variant="outline" className="gap-2 rounded-xl flex-1 text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200" onClick={() => handleRejectClick(order.id, order.title)}>
                           <XCircle className="h-4 w-4" />
                           رفض العمل
                         </Button>
                       </>
-                    ) : order.status === "تم تقديم عرض مالي" ? (
+                    ) : order.status === "تم تقديم خطة تنفيذ" ? (
                       <div className="text-center p-3 bg-blue-50 border border-blue-100 rounded-xl">
-                        <p className="text-xs font-bold text-blue-700">تم تقديم العرض</p>
-                        <p className="text-[10px] text-blue-600 mt-1">بانتظار موافقة الجمعية</p>
+                        <p className="text-xs font-bold text-blue-700">تم تقديم الخطة</p>
+                        <p className="text-[10px] text-blue-600 mt-1">بانتظار اعتماد الموظف المسؤول</p>
                       </div>
                     ) : (
                       <>
@@ -174,7 +173,7 @@ function ContractorAssigned() {
 
       {/* Quote Modal */}
       {selectedOrder && (
-        <ContractorQuoteModal
+        <ContractorPlanModal
           isOpen={isQuoteModalOpen}
           onOpenChange={setIsQuoteModalOpen}
           orderId={selectedOrder.id}

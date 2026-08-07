@@ -199,13 +199,13 @@ function EmployeeOrders() {
                           <span className={`h-2 w-2 rounded-full ${
                             order.status === "مكتمل" ? "bg-green-500" :
                             order.status === "متأخر" ? "bg-red-500" :
-                            order.status === "تم تقديم عرض مالي" ? "bg-blue-500" : "bg-amber-500"
+                            order.status === "تم تقديم خطة تنفيذ" ? "bg-blue-500" : "bg-amber-500"
                           }`} />
                           <span className="text-sm font-medium">{order.status}</span>
                         </div>
-                        {order.quote && (
+                        {order.plan && (
                           <div className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md inline-block">
-                            العرض: {order.quote}
+                            الخطة: {order.plan}
                           </div>
                         )}
                       </div>
@@ -213,7 +213,7 @@ function EmployeeOrders() {
                     <TableCell className="text-sm text-muted-foreground">{order.date}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1">
-                        {order.status === "تم تقديم عرض مالي" ? (
+                        {order.status === "تم تقديم خطة تنفيذ" ? (
                           <>
                             <Button
                               variant="ghost"
