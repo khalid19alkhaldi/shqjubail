@@ -131,7 +131,7 @@ function ContractorAssigned() {
                           رفض العمل
                         </Button>
                       </>
-                    ) : order.status === "تم تقديم عرض مالي" ? (
+                    ) : order.status === "تم تقديم خطة تنفيذ" ? (
                       <div className="text-center p-3 bg-blue-50 border border-blue-100 rounded-xl">
                         <p className="text-xs font-bold text-blue-700">تم تقديم العرض</p>
                         <p className="text-[10px] text-blue-600 mt-1">بانتظار موافقة الجمعية</p>
