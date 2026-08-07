@@ -24,11 +24,9 @@ import { Route as EmployeeOrdersRouteImport } from './routes/employee/orders'
 import { Route as EmployeeMapRouteImport } from './routes/employee/map'
 import { Route as EmployeeLoginRouteImport } from './routes/employee/login'
 import { Route as EmployeeInventoryRouteImport } from './routes/employee/inventory'
-import { Route as EmployeeCostsRouteImport } from './routes/employee/costs'
 import { Route as EmployeeCodesRouteImport } from './routes/employee/codes'
 import { Route as EmployeeBuildingsRouteImport } from './routes/employee/buildings'
 import { Route as ContractorLoginRouteImport } from './routes/contractor/login'
-import { Route as ContractorInvoicesRouteImport } from './routes/contractor/invoices'
 import { Route as ContractorHistoryRouteImport } from './routes/contractor/history'
 import { Route as ContractorAssignedRouteImport } from './routes/contractor/assigned'
 
@@ -107,11 +105,6 @@ const EmployeeInventoryRoute = EmployeeInventoryRouteImport.update({
   path: '/employee/inventory',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EmployeeCostsRoute = EmployeeCostsRouteImport.update({
-  id: '/employee/costs',
-  path: '/employee/costs',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const EmployeeCodesRoute = EmployeeCodesRouteImport.update({
   id: '/employee/codes',
   path: '/employee/codes',
@@ -125,11 +118,6 @@ const EmployeeBuildingsRoute = EmployeeBuildingsRouteImport.update({
 const ContractorLoginRoute = ContractorLoginRouteImport.update({
   id: '/contractor/login',
   path: '/contractor/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContractorInvoicesRoute = ContractorInvoicesRouteImport.update({
-  id: '/contractor/invoices',
-  path: '/contractor/invoices',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContractorHistoryRoute = ContractorHistoryRouteImport.update({
@@ -148,11 +136,9 @@ export interface FileRoutesByFullPath {
   '/request': typeof RequestRoute
   '/contractor/assigned': typeof ContractorAssignedRoute
   '/contractor/history': typeof ContractorHistoryRoute
-  '/contractor/invoices': typeof ContractorInvoicesRoute
   '/contractor/login': typeof ContractorLoginRoute
   '/employee/buildings': typeof EmployeeBuildingsRoute
   '/employee/codes': typeof EmployeeCodesRoute
-  '/employee/costs': typeof EmployeeCostsRoute
   '/employee/inventory': typeof EmployeeInventoryRoute
   '/employee/login': typeof EmployeeLoginRoute
   '/employee/map': typeof EmployeeMapRoute
@@ -172,11 +158,9 @@ export interface FileRoutesByTo {
   '/request': typeof RequestRoute
   '/contractor/assigned': typeof ContractorAssignedRoute
   '/contractor/history': typeof ContractorHistoryRoute
-  '/contractor/invoices': typeof ContractorInvoicesRoute
   '/contractor/login': typeof ContractorLoginRoute
   '/employee/buildings': typeof EmployeeBuildingsRoute
   '/employee/codes': typeof EmployeeCodesRoute
-  '/employee/costs': typeof EmployeeCostsRoute
   '/employee/inventory': typeof EmployeeInventoryRoute
   '/employee/login': typeof EmployeeLoginRoute
   '/employee/map': typeof EmployeeMapRoute
@@ -197,11 +181,9 @@ export interface FileRoutesById {
   '/request': typeof RequestRoute
   '/contractor/assigned': typeof ContractorAssignedRoute
   '/contractor/history': typeof ContractorHistoryRoute
-  '/contractor/invoices': typeof ContractorInvoicesRoute
   '/contractor/login': typeof ContractorLoginRoute
   '/employee/buildings': typeof EmployeeBuildingsRoute
   '/employee/codes': typeof EmployeeCodesRoute
-  '/employee/costs': typeof EmployeeCostsRoute
   '/employee/inventory': typeof EmployeeInventoryRoute
   '/employee/login': typeof EmployeeLoginRoute
   '/employee/map': typeof EmployeeMapRoute
@@ -223,11 +205,9 @@ export interface FileRouteTypes {
     | '/request'
     | '/contractor/assigned'
     | '/contractor/history'
-    | '/contractor/invoices'
     | '/contractor/login'
     | '/employee/buildings'
     | '/employee/codes'
-    | '/employee/costs'
     | '/employee/inventory'
     | '/employee/login'
     | '/employee/map'
@@ -247,11 +227,9 @@ export interface FileRouteTypes {
     | '/request'
     | '/contractor/assigned'
     | '/contractor/history'
-    | '/contractor/invoices'
     | '/contractor/login'
     | '/employee/buildings'
     | '/employee/codes'
-    | '/employee/costs'
     | '/employee/inventory'
     | '/employee/login'
     | '/employee/map'
@@ -271,11 +249,9 @@ export interface FileRouteTypes {
     | '/request'
     | '/contractor/assigned'
     | '/contractor/history'
-    | '/contractor/invoices'
     | '/contractor/login'
     | '/employee/buildings'
     | '/employee/codes'
-    | '/employee/costs'
     | '/employee/inventory'
     | '/employee/login'
     | '/employee/map'
@@ -296,11 +272,9 @@ export interface RootRouteChildren {
   RequestRoute: typeof RequestRoute
   ContractorAssignedRoute: typeof ContractorAssignedRoute
   ContractorHistoryRoute: typeof ContractorHistoryRoute
-  ContractorInvoicesRoute: typeof ContractorInvoicesRoute
   ContractorLoginRoute: typeof ContractorLoginRoute
   EmployeeBuildingsRoute: typeof EmployeeBuildingsRoute
   EmployeeCodesRoute: typeof EmployeeCodesRoute
-  EmployeeCostsRoute: typeof EmployeeCostsRoute
   EmployeeInventoryRoute: typeof EmployeeInventoryRoute
   EmployeeLoginRoute: typeof EmployeeLoginRoute
   EmployeeMapRoute: typeof EmployeeMapRoute
@@ -423,13 +397,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmployeeInventoryRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/employee/costs': {
-      id: '/employee/costs'
-      path: '/employee/costs'
-      fullPath: '/employee/costs'
-      preLoaderRoute: typeof EmployeeCostsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/employee/codes': {
       id: '/employee/codes'
       path: '/employee/codes'
@@ -449,13 +416,6 @@ declare module '@tanstack/react-router' {
       path: '/contractor/login'
       fullPath: '/contractor/login'
       preLoaderRoute: typeof ContractorLoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contractor/invoices': {
-      id: '/contractor/invoices'
-      path: '/contractor/invoices'
-      fullPath: '/contractor/invoices'
-      preLoaderRoute: typeof ContractorInvoicesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contractor/history': {
@@ -480,11 +440,9 @@ const rootRouteChildren: RootRouteChildren = {
   RequestRoute: RequestRoute,
   ContractorAssignedRoute: ContractorAssignedRoute,
   ContractorHistoryRoute: ContractorHistoryRoute,
-  ContractorInvoicesRoute: ContractorInvoicesRoute,
   ContractorLoginRoute: ContractorLoginRoute,
   EmployeeBuildingsRoute: EmployeeBuildingsRoute,
   EmployeeCodesRoute: EmployeeCodesRoute,
-  EmployeeCostsRoute: EmployeeCostsRoute,
   EmployeeInventoryRoute: EmployeeInventoryRoute,
   EmployeeLoginRoute: EmployeeLoginRoute,
   EmployeeMapRoute: EmployeeMapRoute,
